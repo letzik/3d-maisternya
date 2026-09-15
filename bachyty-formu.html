@@ -1,0 +1,738 @@
+<title>Бачити Форму</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#14171c; --panel:#1b1f26; --panel-2:#232833; --viewport:#0b0d11; --line:#2d333d;
+    --ink:#e9ecf2; --muted:#8a92a3; --accent:#f0a840; --accent-ink:#241705;
+    --ok:#5fc98a; --bad:#e8636b;
+    --box:#d2607a; --sphere:#4f9fe0; --cylinder:#4bb3a6; --cone:#c47fe0; --torus:#e0c34f; --plane:#9aa4b5;
+    --font-display:"Chakra Petch",-apple-system,"Segoe UI",sans-serif;
+    --font-body:"IBM Plex Sans",-apple-system,"Segoe UI",sans-serif;
+    --font-mono:"IBM Plex Mono","SFMono-Regular",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  a{color:var(--accent)}
+  .wrap{max-width:1080px;margin:0 auto;padding:18px 20px 60px}
+
+  /* ---------- header ---------- */
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    flex-wrap:wrap;padding-block:6px 18px;border-bottom:1px solid var(--line);margin-bottom:22px}
+  .brand{display:flex;align-items:baseline;gap:10px}
+  .brand h1{font-family:var(--font-display);font-weight:700;font-size:1.5rem;margin:0;
+    letter-spacing:.01em;text-wrap:balance}
+  .brand .club{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.1em}
+  .hud{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .modeswitch{display:flex;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:3px;gap:2px}
+  .modeswitch button{font-family:var(--font-display);font-size:.82rem;font-weight:600;letter-spacing:.02em;
+    padding:8px 14px;border-radius:6px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+  .modeswitch button.active{background:var(--accent);color:var(--accent-ink)}
+  .score{font-family:var(--font-mono);font-size:.82rem;color:var(--muted);white-space:nowrap}
+  .score b{color:var(--ink);font-weight:600}
+  .score .streak{color:var(--accent)}
+
+  /* ---------- generic panel ---------- */
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+  .lede{font-size:.92rem;color:var(--muted);max-width:62ch;margin:0 0 16px}
+  .lede b{color:var(--ink)}
+  h2{font-family:var(--font-display);font-size:1.05rem;font-weight:600;margin:0 0 4px;text-wrap:balance}
+  .eyebrow{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 6px}
+
+  /* ---------- viewport ---------- */
+  .viewport{position:relative;background:var(--viewport);border:1px solid var(--line);border-radius:10px;
+    overflow:hidden;aspect-ratio:1/1;touch-action:none;cursor:grab}
+  .viewport:active{cursor:grabbing}
+  .viewport canvas{display:block;width:100%;height:100%}
+  .viewport .hint{position:absolute;left:10px;bottom:9px;font-family:var(--font-mono);font-size:.68rem;
+    color:#6b7385;pointer-events:none;letter-spacing:.03em}
+  .axislegend{position:absolute;right:10px;top:9px;display:flex;gap:8px;font-family:var(--font-mono);
+    font-size:.68rem;color:var(--muted);pointer-events:none}
+  .axislegend span{display:inline-flex;align-items:center;gap:4px}
+  .axislegend i{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+  /* ---------- mode 1 layout ---------- */
+  #mode1{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:20px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+  .chip{display:flex;align-items:center;gap:7px;padding:9px 13px;border-radius:999px;
+    border:1.5px solid var(--line);background:var(--panel-2);cursor:pointer;user-select:none;
+    font-size:.86rem;color:var(--ink);transition:border-color .12s,background .12s}
+  .chip svg{width:16px;height:16px;flex:none}
+  .chip.on{border-color:var(--chip-c);background:color-mix(in srgb, var(--chip-c) 22%, var(--panel-2))}
+  .chip .dot{width:9px;height:9px;border-radius:50%;background:var(--chip-c);flex:none}
+
+  .rowbtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  button.primary{font-family:var(--font-display);font-weight:600;font-size:.88rem;letter-spacing:.02em;
+    padding:11px 20px;border-radius:8px;border:0;background:var(--accent);color:var(--accent-ink);cursor:pointer}
+  button.primary:disabled{opacity:.4;cursor:not-allowed}
+  button.ghost{font-family:var(--font-display);font-weight:600;font-size:.88rem;letter-spacing:.02em;
+    padding:11px 20px;border-radius:8px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:8px;font-size:.88rem;border:1px solid var(--line);
+    display:none}
+  .feedback.show{display:block}
+  .feedback.ok{border-color:var(--ok);color:var(--ok)}
+  .feedback.bad{border-color:var(--bad);color:var(--bad)}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:.8rem;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+  /* ---------- mode 2 layout ---------- */
+  #mode2 .target-row{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+  #mode2 .target-box{width:min(260px,100%);flex:none}
+  #mode2 .target-note{font-size:.86rem;color:var(--muted);max-width:32ch}
+  .candgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:18px}
+  .cand{border-radius:10px;padding:8px;border:1.5px solid var(--line);background:var(--panel-2)}
+  .cand .viewport{aspect-ratio:1/1}
+  .cand .label{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);text-align:center;padding:8px 0 4px}
+  .cand .why{font-size:.78rem;color:var(--muted);text-align:center;padding:0 4px 6px;min-height:1.2em}
+  .cand button.pick{width:100%;font-family:var(--font-display);font-weight:600;font-size:.82rem;
+    padding:8px;border-radius:6px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+  .cand button.pick:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  .cand button.pick:disabled{opacity:.5;cursor:default}
+  .cand.correct{border-color:var(--ok)}
+  .cand.correct .why{color:var(--ok)}
+  .cand.wrong{border-color:var(--bad)}
+  .cand.wrong .why{color:var(--bad)}
+
+  footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);
+    font-family:var(--font-mono);font-size:.74rem;color:var(--muted)}
+
+  @media (max-width:760px){
+    #mode1{grid-template-columns:1fr}
+    header{flex-direction:column;align-items:flex-start}
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <h1>Бачити Форму</h1>
+      <span class="club">3D-Майстерня · тренажер</span>
+    </div>
+    <div class="hud">
+      <div class="modeswitch">
+        <button id="btn-mode1" class="active">Розклади на форми</button>
+        <button id="btn-mode2">Онови обертання</button>
+      </div>
+      <div class="score">
+        рахунок <b id="score-txt">0/0</b> · серія <b class="streak" id="streak-txt">0</b>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================= MODE 1 ======================= -->
+  <section id="mode1">
+    <div class="panel">
+      <div class="eyebrow">Об’єкт</div>
+      <div class="viewport" id="vp-m1">
+        <div class="axislegend">
+          <span><i style="background:#e0524f"></i>X</span>
+          <span><i style="background:#4fb35a"></i>Y</span>
+          <span><i style="background:#4d94e0"></i>Z</span>
+        </div>
+        <div class="hint">тягни мишею — крути</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="eyebrow">Завдання</div>
+      <h2 id="m1-title">З яких базових форм це складено?</h2>
+      <p class="lede">Обери всі типи форм, які бачиш в об’єкті ліворуч. Не має значення скільки разів форма повторюється — важливо, які <b>типи</b> присутні.</p>
+      <div class="chips" id="m1-chips"></div>
+      <div class="rowbtns">
+        <button class="primary" id="m1-check">Перевірити</button>
+        <button class="ghost" id="m1-next" style="display:none">Наступний об’єкт →</button>
+      </div>
+      <div class="feedback" id="m1-feedback"></div>
+      <div class="legend" id="m1-legend" style="display:none"></div>
+    </div>
+  </section>
+
+  <!-- ======================= MODE 2 ======================= -->
+  <section id="mode2" style="display:none">
+    <div class="panel">
+      <div class="eyebrow">Ціль</div>
+      <h2>Яка з трьох фігур — це та сама ціль, просто повернена?</h2>
+      <p class="lede">Крути мишею <b>і ціль, і всі варіанти</b> — шукай той, що при обертанні збігається з ціллю кубик-в-кубик (кольори кубиків підказують, який де). Один варіант — це справді ціль, просто повернена. Другий — її <b>дзеркальне відображення</b>: як не крути, кольори ляжуть у дзеркальному порядку, а не так само. Третій — узагалі інша фігура.</p>
+      <div class="target-row">
+        <div class="target-box">
+          <div class="viewport" id="vp-target"><div class="hint">тягни — крути</div></div>
+        </div>
+      </div>
+      <div class="candgrid" id="m2-cands"></div>
+      <div class="feedback" id="m2-feedback"></div>
+      <div class="rowbtns" style="margin-top:14px">
+        <button class="ghost" id="m2-next" style="display:none">Наступна фігура →</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>Гурток «3D-Майстерня» · тренажер для домашньої практики між заняттями</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     Категоріальні кольори примітивів (легенда стабільна завжди)
+     ============================================================ */
+  var PRIM = {
+    box:      { label:"Куб",      color:0xd2607a },
+    sphere:   { label:"Куля",     color:0x4f9fe0 },
+    cylinder: { label:"Циліндр",  color:0x4bb3a6 },
+    cone:     { label:"Конус",    color:0xc47fe0 },
+    torus:    { label:"Тор (бублик)", color:0xe0c34f },
+    plane:    { label:"Площина",  color:0x9aa4b5 }
+  };
+  var NEUTRAL = 0xc7cedb;
+
+  function svgIcon(type){
+    switch(type){
+      case "box": return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7l8-4 8 4-8 4-8-4z"/><path d="M4 7v10l8 4 8-4V7"/><path d="M12 11v10"/></svg>';
+      case "sphere": return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><ellipse cx="12" cy="12" rx="8" ry="3"/></svg>';
+      case "cylinder": return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12a7 3 0 0 0 14 0V6"/></svg>';
+      case "cone": return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="18" rx="7" ry="3"/><path d="M12 3l7 15"/><path d="M12 3L5 18"/></svg>';
+      case "torus": return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="12" rx="9" ry="5"/><ellipse cx="12" cy="12" rx="3.5" ry="2"/></svg>';
+      case "plane": return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8l9-4 9 4-9 4-9-4z"/></svg>';
+    }
+  }
+
+  /* ============================================================
+     Рецепти складених об’єктів (режим 1)
+     ============================================================ */
+  var OBJECTS = [
+    { name:"Кухоль", types:["cylinder","torus"], parts:[
+      {type:"cylinder", pos:[0,0,0], size:[0.6,0.6,1.1,24]},
+      {type:"torus", pos:[0.62,0,0], size:[0.32,0.09], rot:[0,Math.PI/2,0]}
+    ]},
+    { name:"Настільна лампа", types:["cylinder","cone"], parts:[
+      {type:"cylinder", pos:[0,-0.9,0], size:[0.5,0.5,0.12,24]},
+      {type:"cylinder", pos:[0,-0.4,0], size:[0.05,0.05,0.9,12]},
+      {type:"cone", pos:[0,0.25,0], size:[0.45,0.55,24], rot:[Math.PI,0,0]}
+    ]},
+    { name:"Ракета", types:["cylinder","cone","sphere"], parts:[
+      {type:"cylinder", pos:[0,-0.1,0], size:[0.32,0.32,1.3,20]},
+      {type:"cone", pos:[0,0.85,0], size:[0.32,0.7,20]},
+      {type:"sphere", pos:[0,0.1,0.33], size:[0.14,16,12]}
+    ]},
+    { name:"Робот", types:["box","sphere","cylinder"], parts:[
+      {type:"box", pos:[0,0,0], size:[0.8,0.9,0.5]},
+      {type:"sphere", pos:[0,0.75,0], size:[0.38,20,16]},
+      {type:"cylinder", pos:[-0.55,0.15,0], size:[0.14,0.14,0.8,12], rot:[0,0,0.35]},
+      {type:"cylinder", pos:[0.55,0.15,0], size:[0.14,0.14,0.8,12], rot:[0,0,-0.35]}
+    ]},
+    { name:"Гриб", types:["cylinder","sphere"], parts:[
+      {type:"cylinder", pos:[0,-0.4,0], size:[0.22,0.28,0.9,16]},
+      {type:"sphere", pos:[0,0.18,0], size:[0.62,20,14], scaleY:0.55}
+    ]},
+    { name:"Гантеля", types:["cylinder","sphere"], parts:[
+      {type:"cylinder", pos:[0,0,0], size:[0.09,0.09,1.3,12], rot:[0,0,Math.PI/2]},
+      {type:"sphere", pos:[-0.75,0,0], size:[0.34,18,14]},
+      {type:"sphere", pos:[0.75,0,0], size:[0.34,18,14]}
+    ]},
+    { name:"Вежа", types:["cylinder","cone","box"], parts:[
+      {type:"cylinder", pos:[0,-0.2,0], size:[0.42,0.5,1.4,20]},
+      {type:"cone", pos:[0,0.85,0], size:[0.5,0.7,20]},
+      {type:"box", pos:[0,0.05,0.42], size:[0.16,0.22,0.08]},
+      {type:"box", pos:[0.3,-0.1,0.36], size:[0.14,0.18,0.08]}
+    ]},
+    { name:"Машина", types:["box","cylinder"], parts:[
+      {type:"box", pos:[0,-0.15,0], size:[1.6,0.4,0.7]},
+      {type:"box", pos:[-0.1,0.25,0], size:[0.8,0.4,0.6]},
+      {type:"cylinder", pos:[-0.55,-0.45,0.4], size:[0.22,0.22,0.14,16], rot:[Math.PI/2,0,0]},
+      {type:"cylinder", pos:[0.55,-0.45,0.4], size:[0.22,0.22,0.14,16], rot:[Math.PI/2,0,0]},
+      {type:"cylinder", pos:[-0.55,-0.45,-0.4], size:[0.22,0.22,0.14,16], rot:[Math.PI/2,0,0]},
+      {type:"cylinder", pos:[0.55,-0.45,-0.4], size:[0.22,0.22,0.14,16], rot:[Math.PI/2,0,0]}
+    ]},
+    { name:"Кільце на підставці", types:["torus","cylinder","box"], parts:[
+      {type:"box", pos:[0,-0.85,0], size:[0.7,0.14,0.7]},
+      {type:"cylinder", pos:[0,-0.45,0], size:[0.08,0.08,0.7,12]},
+      {type:"torus", pos:[0,0.15,0], size:[0.45,0.13]}
+    ]},
+    { name:"Шахова пішка", types:["sphere","cone","cylinder"], parts:[
+      {type:"cylinder", pos:[0,-0.85,0], size:[0.42,0.5,0.2,20]},
+      {type:"cone", pos:[0,-0.15,0], size:[0.3,1.0,20]},
+      {type:"sphere", pos:[0,0.55,0], size:[0.24,16,12]}
+    ]},
+    { name:"Свічка", types:["cylinder","cone"], parts:[
+      {type:"cylinder", pos:[0,-0.2,0], size:[0.28,0.28,1.2,20]},
+      {type:"cone", pos:[0,0.55,0], size:[0.12,0.35,12]}
+    ]},
+    { name:"Стіл", types:["plane","cylinder"], parts:[
+      {type:"plane", pos:[0,0.35,0], size:[1.4,1.0], rot:[-Math.PI/2,0,0]},
+      {type:"cylinder", pos:[-0.55,-0.15,0.35], size:[0.05,0.05,0.9,10]},
+      {type:"cylinder", pos:[0.55,-0.15,0.35], size:[0.05,0.05,0.9,10]},
+      {type:"cylinder", pos:[-0.55,-0.15,-0.35], size:[0.05,0.05,0.9,10]},
+      {type:"cylinder", pos:[0.55,-0.15,-0.35], size:[0.05,0.05,0.9,10]}
+    ]},
+    { name:"Пончик на тарілці", types:["torus","plane"], parts:[
+      {type:"plane", pos:[0,-0.3,0], size:[1.1,1.1], rot:[-Math.PI/2,0,0]},
+      {type:"torus", pos:[0,-0.05,0], size:[0.4,0.14], rot:[Math.PI/2,0,0]}
+    ]},
+    { name:"Сатурн", types:["sphere","torus"], parts:[
+      {type:"sphere", pos:[0,0,0], size:[0.55,20,16]},
+      {type:"torus", pos:[0,0,0], size:[0.95,0.06], rot:[1.3,0.3,0]}
+    ]},
+    { name:"Кубок", types:["cylinder","cone","sphere"], parts:[
+      {type:"cylinder", pos:[0,-0.85,0], size:[0.35,0.42,0.18,20]},
+      {type:"cylinder", pos:[0,-0.55,0], size:[0.07,0.07,0.5,12]},
+      {type:"cone", pos:[0,0.05,0], size:[0.4,0.6,20], rot:[Math.PI,0,0]},
+      {type:"sphere", pos:[0,0.5,0], size:[0.15,14,10]}
+    ]},
+    { name:"Сніговик", types:["sphere"], parts:[
+      {type:"sphere", pos:[0,-0.55,0], size:[0.5,18,14]},
+      {type:"sphere", pos:[0,0.05,0], size:[0.36,18,14]},
+      {type:"sphere", pos:[0,0.55,0], size:[0.24,16,12]}
+    ]},
+    { name:"Коробка з кубиків", types:["box"], parts:[
+      {type:"box", pos:[0,-0.55,0], size:[0.9,0.5,0.9]},
+      {type:"box", pos:[0.05,0.0,0.05], size:[0.6,0.45,0.6]},
+      {type:"box", pos:[-0.05,0.5,-0.05], size:[0.4,0.4,0.4]}
+    ]},
+    { name:"Пісочний годинник", types:["cone","cylinder"], parts:[
+      {type:"cone", pos:[0,0.35,0], size:[0.42,0.7,20], rot:[Math.PI,0,0]},
+      {type:"cone", pos:[0,-0.35,0], size:[0.42,0.7,20]},
+      {type:"cylinder", pos:[0,0.72,0], size:[0.46,0.46,0.1,20]},
+      {type:"cylinder", pos:[0,-0.72,0], size:[0.46,0.46,0.1,20]}
+    ]},
+    { name:"Стілець", types:["box","cylinder"], parts:[
+      {type:"box", pos:[0,-0.05,0], size:[0.9,0.14,0.9]},
+      {type:"box", pos:[0,0.45,-0.4], size:[0.9,0.9,0.12]},
+      {type:"cylinder", pos:[0.35,-0.55,0.35], size:[0.05,0.05,0.9,10]},
+      {type:"cylinder", pos:[-0.35,-0.55,0.35], size:[0.05,0.05,0.9,10]},
+      {type:"cylinder", pos:[0.35,-0.55,-0.35], size:[0.05,0.05,0.9,10]},
+      {type:"cylinder", pos:[-0.35,-0.55,-0.35], size:[0.05,0.05,0.9,10]}
+    ]},
+    { name:"Тотемний стовп", types:["torus","cylinder"], parts:[
+      {type:"cylinder", pos:[0,0,0], size:[0.06,0.06,1.8,10]},
+      {type:"torus", pos:[0,-0.55,0], size:[0.32,0.09], rot:[Math.PI/2,0,0]},
+      {type:"torus", pos:[0,0,0], size:[0.32,0.09], rot:[Math.PI/2,0,0]},
+      {type:"torus", pos:[0,0.55,0], size:[0.32,0.09], rot:[Math.PI/2,0,0]}
+    ]}
+  ];
+
+  function buildObject(recipe){
+    var group = new THREE.Group();
+    recipe.parts.forEach(function(p){
+      var geo;
+      if(p.type==="box") geo = new THREE.BoxGeometry(p.size[0],p.size[1],p.size[2]);
+      else if(p.type==="sphere") geo = new THREE.SphereGeometry(p.size[0], p.size[1]||18, p.size[2]||14);
+      else if(p.type==="cylinder") geo = new THREE.CylinderGeometry(p.size[0],p.size[1],p.size[2],p.size[3]||20);
+      else if(p.type==="cone") geo = new THREE.ConeGeometry(p.size[0],p.size[1],p.size[2]||20);
+      else if(p.type==="torus") geo = new THREE.TorusGeometry(p.size[0],p.size[1],12,32);
+      else if(p.type==="plane") geo = new THREE.PlaneGeometry(p.size[0],p.size[1]);
+      var mat = new THREE.MeshStandardMaterial({
+        color:NEUTRAL, roughness:0.55, metalness:0.05,
+        side: p.type==="plane" ? THREE.DoubleSide : THREE.FrontSide
+      });
+      mat.userData = { primType: p.type };
+      var mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(p.pos[0],p.pos[1],p.pos[2]);
+      if(p.rot) mesh.rotation.set(p.rot[0],p.rot[1],p.rot[2]);
+      if(p.scaleY) mesh.scale.y = p.scaleY;
+      var edges = new THREE.LineSegments(
+        new THREE.EdgesGeometry(geo, 25),
+        new THREE.LineBasicMaterial({color:0x0b0d11, transparent:true, opacity:0.35})
+      );
+      mesh.add(edges);
+      group.add(mesh);
+    });
+    return group;
+  }
+
+  /* ============================================================
+     Полікубічні фігури для ментального обертання (режим 2)
+     перевірено офлайн: жодна з них не збігається зі своїм
+     дзеркальним відображенням через жодне обертання
+     ============================================================ */
+  var POLY_SHAPES = [
+    [[0,0,0],[1,0,0],[1,1,0],[1,2,0],[2,2,0],[2,2,1],[2,2,2]],
+    [[0,0,0],[0,1,0],[1,1,0],[1,1,1],[2,1,1],[2,2,1],[2,2,2]],
+    [[0,0,0],[1,0,0],[2,0,0],[2,1,0],[2,2,0],[2,2,1]],
+    [[0,0,0],[0,0,1],[0,1,1],[1,1,1],[1,1,2],[1,2,2]],
+    [[0,0,0],[1,0,0],[1,0,1],[1,1,1],[2,1,1],[2,1,2]]
+  ];
+
+  function centeredCubes(cubes){
+    var cx=0,cy=0,cz=0;
+    cubes.forEach(function(c){cx+=c[0];cy+=c[1];cz+=c[2];});
+    cx/=cubes.length; cy/=cubes.length; cz/=cubes.length;
+    return cubes.map(function(c){return [c[0]-cx,c[1]-cy,c[2]-cz];});
+  }
+
+  function buildPoly(cubes, colors){
+    // кожен кубик — власна геометрія й матеріал (не діляться між собою),
+    // щоб колір за індексом працював і ніщо не могло випадково зачепити сусіда
+    var group = new THREE.Group();
+    centeredCubes(cubes).forEach(function(c, i){
+      var geo = new THREE.BoxGeometry(0.94,0.94,0.94);
+      var col = (colors && colors[i]!=null) ? colors[i] : NEUTRAL;
+      var mat = new THREE.MeshStandardMaterial({color:col, roughness:0.55, metalness:0.05});
+      var mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(c[0],c[1],c[2]);
+      var edges = new THREE.LineSegments(
+        new THREE.EdgesGeometry(geo),
+        new THREE.LineBasicMaterial({color:0x0b0d11, transparent:true, opacity:0.5})
+      );
+      mesh.add(edges);
+      group.add(mesh);
+    });
+    return group;
+  }
+
+  function hslToHex(h,s,l){
+    s/=100; l/=100;
+    var c=(1-Math.abs(2*l-1))*s, x=c*(1-Math.abs((h/60)%2-1)), m=l-c/2, r=0,g=0,b=0;
+    if(h<60){r=c;g=x;b=0;} else if(h<120){r=x;g=c;b=0;} else if(h<180){r=0;g=c;b=x;}
+    else if(h<240){r=0;g=x;b=c;} else if(h<300){r=x;g=0;b=c;} else {r=c;g=0;b=x;}
+    r=Math.round((r+m)*255); g=Math.round((g+m)*255); b=Math.round((b+m)*255);
+    return (r<<16)|(g<<8)|b;
+  }
+  function rainbowPalette(n){
+    var out=[];
+    for(var i=0;i<n;i++){ out.push(hslToHex((i/Math.max(n,1))*300, 68, 56)); }
+    return out;
+  }
+
+  function mirrorCubes(cubes){ return cubes.map(function(c){return [-c[0],c[1],c[2]];}); }
+  function nicerEuler(){
+    return [ -0.5 + (Math.random()-0.5)*0.6, 0.7 + (Math.random()-0.5)*1.3, (Math.random()-0.5)*0.3 ];
+  }
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+
+  /* ============================================================
+     Дрібний тривимірний в’юпорт-хелпер: рендерер + сцена + камера,
+     з опційним обертанням мишею/пальцем
+     ============================================================ */
+  function makeViewport(container, opts){
+    opts = opts || {};
+    container.getBoundingClientRect(); // форсуємо reflow — clientWidth одразу після вставки в DOM буває 0
+    var w = container.clientWidth || 300, h = container.clientHeight || 300;
+    var renderer = new THREE.WebGLRenderer({antialias:true, alpha:false});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+    renderer.setSize(w, h);
+    renderer.setClearColor(0x0b0d11, 1);
+    // прибрати лише canvas попереднього рендерера (якщо є), а не весь вміст —
+    // інакше статичні підказки/легенда (hint/axislegend), вставлені в розмітку
+    // чи заздалегідь через JS, зникали б щоразу на новому раунді
+    var oldCanvas = container.querySelector(":scope > canvas");
+    if(oldCanvas) container.removeChild(oldCanvas);
+    container.insertBefore(renderer.domElement, container.firstChild);
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(42, w/h, 0.1, 100);
+    camera.position.set(0, 1.1, opts.dist || 4.2);
+    camera.lookAt(0,0,0);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+    var dl = new THREE.DirectionalLight(0xffffff, 0.9);
+    dl.position.set(3,4,5);
+    scene.add(dl);
+    var dl2 = new THREE.DirectionalLight(0x88aaff, 0.25);
+    dl2.position.set(-3,-2,-4);
+    scene.add(dl2);
+
+    var group = new THREE.Group();
+    scene.add(group);
+
+    if(opts.grid){
+      var grid = new THREE.GridHelper(4, 8, 0x2d333d, 0x1c2028);
+      grid.position.y = -0.95;
+      scene.add(grid);
+    }
+
+    var vp = { renderer:renderer, scene:scene, camera:camera, group:group, alive:true };
+
+    function render(){
+      if(!vp.alive) return;
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+    }
+    render();
+
+    if(opts.draggable){
+      var dragging=false, lastX=0, lastY=0;
+      var el = renderer.domElement;
+      el.addEventListener("pointerdown", function(e){
+        dragging=true; lastX=e.clientX; lastY=e.clientY; el.setPointerCapture(e.pointerId);
+      });
+      el.addEventListener("pointermove", function(e){
+        if(!dragging) return;
+        var dx=e.clientX-lastX, dy=e.clientY-lastY;
+        lastX=e.clientX; lastY=e.clientY;
+        group.rotation.y += dx*0.008;
+        group.rotation.x += dy*0.008;
+      });
+      window.addEventListener("pointerup", function(){ dragging=false; });
+    }
+
+    vp.dispose = function(){
+      vp.alive = false;
+      renderer.dispose();
+    };
+    vp.resize = function(){
+      if(!vp.alive) return;
+      var w2 = container.clientWidth, h2 = container.clientHeight;
+      if(!w2||!h2) return;
+      renderer.setSize(w2,h2);
+      camera.aspect = w2/h2;
+      camera.updateProjectionMatrix();
+    };
+    return vp;
+  }
+
+  var liveViewports = [];
+  function disposeAll(){
+    liveViewports.forEach(function(v){ v.dispose(); });
+    liveViewports = [];
+  }
+  window.addEventListener("resize", function(){
+    liveViewports.forEach(function(v){ v.resize(); });
+  });
+
+  /* ============================================================
+     Рахунок (localStorage — приватно для цього браузера)
+     ============================================================ */
+  var STATS_KEY = "bachyty-formu-stats-v1";
+  function loadStats(){
+    try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || {correct:0,total:0,streak:0}; }
+    catch(e){ return {correct:0,total:0,streak:0}; }
+  }
+  function saveStats(s){
+    try{ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }catch(e){}
+  }
+  var stats = loadStats();
+  function renderStats(){
+    document.getElementById("score-txt").textContent = stats.correct+"/"+stats.total;
+    document.getElementById("streak-txt").textContent = stats.streak;
+  }
+  function recordResult(ok){
+    stats.total++; if(ok){ stats.correct++; stats.streak++; } else { stats.streak = 0; }
+    saveStats(stats); renderStats();
+  }
+  renderStats();
+
+  /* ============================================================
+     РЕЖИМ 1 — розкласти на форми
+     ============================================================ */
+  var m1 = { recipe:null, viewport:null, selected:{}, checked:false };
+  var CHIP_TYPES = ["box","sphere","cylinder","cone","torus","plane"];
+
+  function m1BuildChips(){
+    var box = document.getElementById("m1-chips");
+    box.innerHTML = "";
+    m1.selected = {};
+    CHIP_TYPES.forEach(function(t){
+      var chip = document.createElement("div");
+      chip.className = "chip";
+      chip.style.setProperty("--chip-c", "#"+PRIM[t].color.toString(16).padStart(6,"0"));
+      chip.innerHTML = svgIcon(t) + "<span>"+PRIM[t].label+"</span>";
+      chip.addEventListener("click", function(){
+        if(m1.checked) return;
+        m1.selected[t] = !m1.selected[t];
+        chip.classList.toggle("on", !!m1.selected[t]);
+      });
+      box.appendChild(chip);
+    });
+  }
+
+  function m1NewRound(){
+    m1.checked = false;
+    m1.recipe = pick(OBJECTS);
+    document.getElementById("m1-title").textContent = "З яких базових форм це складено?";
+    document.getElementById("m1-feedback").className = "feedback";
+    document.getElementById("m1-legend").style.display = "none";
+    document.getElementById("m1-check").style.display = "";
+    document.getElementById("m1-check").disabled = false;
+    document.getElementById("m1-next").style.display = "none";
+    m1BuildChips();
+
+    if(m1.viewport) m1.viewport.dispose();
+    var container = document.getElementById("vp-m1");
+    m1.viewport = makeViewport(container, {draggable:true, grid:true, dist:4});
+    liveViewports.push(m1.viewport);
+    var obj = buildObject(m1.recipe);
+    m1.viewport.group.add(obj);
+    m1.viewport.group.rotation.y = 0.5;
+  }
+
+  function m1Check(){
+    if(m1.checked) return;
+    m1.checked = true;
+    var chosen = Object.keys(m1.selected).filter(function(k){return m1.selected[k];});
+    var correctSet = m1.recipe.types;
+    var missing = correctSet.filter(function(t){ return chosen.indexOf(t)===-1; });
+    var extra = chosen.filter(function(t){ return correctSet.indexOf(t)===-1; });
+    var ok = missing.length===0 && extra.length===0;
+
+    var fb = document.getElementById("m1-feedback");
+    fb.className = "feedback show " + (ok?"ok":"bad");
+    if(ok){
+      fb.textContent = "Точно! «"+m1.recipe.name+"» = "+correctSet.map(function(t){return PRIM[t].label.toLowerCase();}).join(" + ")+".";
+    } else {
+      var msg = "Не зовсім. «"+m1.recipe.name+"» = "+correctSet.map(function(t){return PRIM[t].label.toLowerCase();}).join(" + ")+".";
+      fb.textContent = msg;
+    }
+
+    // розфарбувати об'єкт за типами — і показати легенду
+    m1.viewport.group.traverse(function(o){
+      if(o.isMesh && o.material && o.material.userData && o.material.userData.primType){
+        o.material.color.setHex(PRIM[o.material.userData.primType].color);
+      }
+    });
+    var legend = document.getElementById("m1-legend");
+    legend.innerHTML = correctSet.map(function(t){
+      return '<span><i style="background:#'+PRIM[t].color.toString(16).padStart(6,"0")+'"></i>'+PRIM[t].label+'</span>';
+    }).join("");
+    legend.style.display = "flex";
+
+    document.getElementById("m1-check").style.display = "none";
+    document.getElementById("m1-next").style.display = "";
+    recordResult(ok);
+  }
+
+  document.getElementById("m1-check").addEventListener("click", m1Check);
+  document.getElementById("m1-next").addEventListener("click", m1NewRound);
+
+  /* ============================================================
+     РЕЖИМ 2 — знайди справжній поворот (не дзеркало)
+     ============================================================ */
+  var m2 = { shape:null, correctIdx:0, cands:[], picked:null };
+  var KIND_LABEL = {
+    correct: "Це ціль, просто повернена",
+    mirror:  "Це дзеркальне відображення цілі",
+    other:   "Це зовсім інша фігура"
+  };
+
+  function m2NewRound(){
+    document.getElementById("m2-feedback").className = "feedback";
+    document.getElementById("m2-next").style.display = "none";
+    m2.picked = null;
+
+    m2.shape = pick(POLY_SHAPES);
+    var other = pick(POLY_SHAPES.filter(function(s){return s!==m2.shape;}));
+    var baseColors = rainbowPalette(m2.shape.length);
+    var otherColors = rainbowPalette(other.length);
+
+    var slots = shuffle([
+      { kind:"correct", cubes:m2.shape,            colors:baseColors },
+      { kind:"mirror",  cubes:mirrorCubes(m2.shape), colors:baseColors },
+      { kind:"other",   cubes:other,                 colors:otherColors }
+    ]);
+    m2.correctIdx = slots.findIndex(function(s){ return s.kind==="correct"; });
+    m2.slots = slots;
+
+    // ціль
+    var tCont = document.getElementById("vp-target");
+    if(m2.targetVp) m2.targetVp.dispose();
+    tCont.innerHTML = '<div class="hint">тягни — крути</div>';
+    m2.targetVp = makeViewport(tCont, {draggable:true, dist:5.6});
+    liveViewports.push(m2.targetVp);
+    m2.targetVp.group.add(buildPoly(m2.shape, baseColors));
+    m2.targetVp.group.rotation.set.apply(m2.targetVp.group.rotation, nicerEuler());
+
+    // варіанти — спершу прибрати рендерери попереднього раунду (без цього
+    // WebGL-контексти й цикли requestAnimationFrame накопичувались би без кінця)
+    if(m2.cands && m2.cands.length){ m2.cands.forEach(function(v){ v.dispose(); }); }
+    var grid = document.getElementById("m2-cands");
+    grid.innerHTML = "";
+    m2.cands = [];
+    slots.forEach(function(slot, i){
+      var card = document.createElement("div");
+      card.className = "cand";
+      var vpDiv = document.createElement("div");
+      vpDiv.className = "viewport";
+      vpDiv.innerHTML = '<div class="hint">тягни</div>';
+      card.appendChild(vpDiv);
+      var label = document.createElement("div");
+      label.className = "label";
+      label.textContent = "Варіант " + "АБВ"[i];
+      card.appendChild(label);
+      var why = document.createElement("div");
+      why.className = "why";
+      card.appendChild(why);
+      var btn = document.createElement("button");
+      btn.className = "pick";
+      btn.type = "button";
+      btn.textContent = "Обрати";
+      card.appendChild(btn);
+      grid.appendChild(card);
+
+      var vp = makeViewport(vpDiv, {draggable:true, dist:5.6});
+      liveViewports.push(vp);
+      vp.group.add(buildPoly(slot.cubes, slot.colors));
+      vp.group.rotation.set.apply(vp.group.rotation, nicerEuler());
+      m2.cands.push(vp);
+
+      btn.addEventListener("click", function(){ m2Pick(i, card, why, btn); });
+    });
+  }
+
+  function m2Pick(i, card){
+    if(m2.picked!==null) return;
+    m2.picked = i;
+    var ok = (i === m2.correctIdx);
+
+    var cards = document.querySelectorAll("#m2-cands .cand");
+    cards.forEach(function(c, idx){
+      c.querySelector("button.pick").disabled = true;
+      var kind = m2.slots[idx].kind;
+      c.querySelector(".why").textContent = KIND_LABEL[kind];
+      if(idx===m2.correctIdx) c.classList.add("correct");
+      else if(idx===i) c.classList.add("wrong");
+    });
+
+    var fb = document.getElementById("m2-feedback");
+    fb.className = "feedback show " + (ok?"ok":"bad");
+    fb.textContent = ok
+      ? "Так! Покрути обидві ще трохи — переконайся, що кожен кольоровий кубик стає на своє місце."
+      : (m2.slots[i].kind==="mirror"
+          ? "Ні — це дзеркальне відображення. Кольори кубиків ляжуть у протилежному порядку, хоч би як крутити."
+          : "Ні — це геть інша фігура (звідси й інший набір кубиків/кольорів).");
+    document.getElementById("m2-next").style.display = "";
+    recordResult(ok);
+  }
+
+  document.getElementById("m2-next").addEventListener("click", m2NewRound);
+
+  /* ============================================================
+     Перемикання режимів
+     ============================================================ */
+  function setMode(n){
+    document.getElementById("btn-mode1").classList.toggle("active", n===1);
+    document.getElementById("btn-mode2").classList.toggle("active", n===2);
+    document.getElementById("mode1").style.display = n===1 ? "" : "none";
+    document.getElementById("mode2").style.display = n===2 ? "" : "none";
+  }
+  document.getElementById("btn-mode1").addEventListener("click", function(){ setMode(1); });
+  document.getElementById("btn-mode2").addEventListener("click", function(){
+    setMode(2);
+    if(!m2.shape) m2NewRound();
+  });
+
+  /* ============================================================
+     Старт (+ підхоплення гарячого перезавантаження артефакту)
+     ============================================================ */
+  function start(data){
+    m1NewRound();
+    if(data && data.mode===2){ setMode(2); m2NewRound(); }
+  }
+  if(window.claude && window.claude.hot){
+    window.claude.hot.snapshot(function(){
+      return { mode: document.getElementById("mode2").style.display!=="none" ? 2 : 1 };
+    });
+    window.claude.hot.ready ? window.claude.hot.ready(start) : start(window.claude.hot.data || {});
+  } else {
+    start({});
+  }
+})();
+</script>

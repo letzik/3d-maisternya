@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Вправи · 3D-Майстерня</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#14171c; --panel:#1b1f26; --panel-2:#232833; --line:#2d333d;
+    --ink:#e9ecf2; --muted:#8a92a3; --accent:#f0a840; --accent-ink:#241705;
+    --font-display:"Chakra Petch",-apple-system,"Segoe UI",sans-serif;
+    --font-body:"IBM Plex Sans",-apple-system,"Segoe UI",sans-serif;
+    --font-mono:"IBM Plex Mono","SFMono-Regular",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.55;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:40px 20px 70px}
+  header{border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:30px}
+  .club{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 8px}
+  h1{font-family:var(--font-display);font-weight:700;font-size:2rem;margin:0 0 10px;text-wrap:balance}
+  .lede{color:var(--muted);max-width:56ch;margin:0;font-size:1rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  a.card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:20px;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
+  a.card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .card .kind{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--accent);margin:0 0 8px}
+  .card h2{font-family:var(--font-display);font-size:1.15rem;font-weight:600;margin:0 0 8px}
+  .card p{color:var(--muted);font-size:.9rem;margin:0}
+  .soon{border-style:dashed;opacity:.55;cursor:default}
+  .soon:hover{border-color:var(--line);transform:none}
+  footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);
+    font-family:var(--font-mono);font-size:.75rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="club">3D-Майстерня · вправи</p>
+    <h1>Тренуйся між заняттями</h1>
+    <p class="lede">Невеликі інтерактивні вправи гуртка — відкриваються прямо в браузері, без встановлення й реєстрації. Список поповнюватиметься протягом року.</p>
+  </header>
+
+  <div class="grid">
+    <a class="card" href="bachyty-formu.html">
+      <p class="kind">Просторове мислення</p>
+      <h2>Бачити Форму</h2>
+      <p>Розклади об'єкт на прості форми й знайди серед варіантів справжній поворот фігури, а не її дзеркало.</p>
+    </a>
+    <div class="card soon">
+      <p class="kind">Скоро</p>
+      <h2>Наступна вправа</h2>
+      <p>З'явиться протягом навчального року.</p>
+    </div>
+  </div>
+
+  <footer>Гурток «3D-Майстерня» · Класичний фаховий коледж СумДУ</footer>
+</div>
+</body>
+</html>
