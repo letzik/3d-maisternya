@@ -1,0 +1,193 @@
+# The nine blocks of the year. Body text lives in src/<lang>/blocks/<slug>.md.
+# Everything that appears on cards, in the program table and in navigation lives here.
+# sessions: what the program plans (a range is fine); range: approximate session numbers in the year (intro = 1).
+
+blocks:
+  - num: 1
+    slug: 01-first-object
+    icon: cube
+    sessions: "2"
+    range: "2–3"
+    exercises: [see-shapes]
+    title:
+      uk: "Перший об’єкт за одне заняття"
+      en: "Your first object in one session"
+    tagline:
+      uk: "П’ять інструментів, дзеркальна симетрія й колір по гранях — без UV-розгортки."
+      en: "Five tools, mirror symmetry and face colors — no UV unwrapping."
+    checkpoint:
+      uk: "Закінчений кольоровий симетричний об’єкт — перший «показний» результат року."
+      en: "A finished, colored, symmetrical object — your first showpiece of the year."
+    challenge:
+      uk: "Другий об’єкт складнішої симетрії або палітра під настрій («іржавий метал» проти «неонової іграшки»)."
+      en: "A second object with more complex symmetry, or a palette for a mood (“rusty metal” vs “neon toy”)."
+    further:
+      - {title: "Imphenzia — Workshops", url: "https://imphenzia.com/workshops", note: {uk: "блокаут за п’ятьма гарячими клавішами й колір без UV", en: "five-hotkey blockout and color without UVs"}}
+      - {title: "Blender Guru — Donut tutorial", url: "https://www.blenderguru.com/posts/blender-donut-v5-tutorial", note: {uk: "один проєкт — повний цикл, файли-чекпоінти", en: "one project, the full cycle, checkpoint files"}}
+
+  - num: 2
+    slug: 02-toolkit
+    icon: knife
+    sessions: "2–3"
+    range: "4–5"
+    exercises: []
+    title:
+      uk: "Розширений інструментарій і деталізація"
+      en: "Extended toolkit and detailing"
+    tagline:
+      uk: "Knife, Subdivision Surface, Boolean і Merge: форми без симетрії та збірка з частин."
+      en: "Knife, Subdivision Surface, Boolean and Merge: asymmetric forms and assembly from parts."
+    checkpoint:
+      uk: "Об’єкт із блоку 1, доопрацьований і зібраний із кількох частин."
+      en: "Your object from block 1, refined and assembled from several parts."
+    challenge:
+      uk: "Та сама модель із рухомою деталлю (кришка, дверцята, вежа) — окремий об’єкт із власним центром обертання."
+      en: "The same model with a moving part (lid, door, turret) — a separate object with its own origin."
+    further: []
+
+  - num: 3
+    slug: 03-references
+    icon: reference
+    sessions: "3–4"
+    range: "6–7"
+    exercises: []
+    title:
+      uk: "Моделювання за референсами"
+      en: "Modeling from references"
+    tagline:
+      uk: "Не вигадувати пропорції, а звіряти їх із зображенням прямо у в’юпорті."
+      en: "Don’t invent proportions — check them against an image right in the viewport."
+    checkpoint:
+      uk: "Власний об’єкт (машина, зброя, персонаж, будівля), змодельований за референсом: блокаут і деталізація."
+      en: "Your own object (car, weapon, character, building) modeled from a reference: blockout and detailing."
+    challenge:
+      uk: "Об’єкт зі складною симетрією чи механізмом або власний намальований референс замість знайденого фото."
+      en: "An object with complex symmetry or a mechanism, or your own drawn reference instead of a found photo."
+    further:
+      - {title: "GameDev.tv — Blender Low Poly Characters (Grant Abbitt)", url: "https://gamedev.tv/courses/blender-low-poly-characters", note: {uk: "швидкий білдаут і референси", en: "quick build-out and references"}}
+
+  - num: 4
+    slug: 04-topology
+    icon: mesh
+    sessions: "2–3"
+    range: "8–9"
+    exercises: [clean-mesh]
+    title:
+      uk: "Топологія та ретопологія"
+      en: "Topology and retopology"
+    tagline:
+      uk: "Чому «просто зробити форму» недостатньо: чи витримає ця сітка рух?"
+      en: "Why “just making the shape” is not enough: will this mesh survive movement?"
+    checkpoint:
+      uk: "Об’єкт із блоку 3, перевірений і перетопологізований: чиста сітка саме там, де буде рух."
+      en: "Your object from block 3, checked and retopologized: clean mesh exactly where the movement will be."
+    challenge:
+      uk: "Та сама модель зі свідомо зниженим бюджетом полігонів (LOD-мислення)."
+      en: "The same model with a deliberately reduced polygon budget (LOD thinking)."
+    further:
+      - {title: "CG Cookie — 8 Tips for Clean Topology in Blender", url: "https://blog.cgcookie.com/posts/guide-to-clean-topology/", note: {uk: "edge flow через прості форми, MatCap-перевірка", en: "edge flow through simple shapes, the MatCap check"}}
+
+  - num: 5
+    slug: 05-flagship
+    icon: character
+    sessions: "4–5"
+    range: "10–14"
+    exercises: []
+    title:
+      uk: "Свій ігровий об’єкт — флагманський проєкт"
+      en: "Your own game object — the flagship project"
+    tagline:
+      uk: "Найбільший проєкт півріччя за власною ідеєю: силует, деталі, палітра, поза."
+      en: "The biggest project of the half-year, from your own idea: silhouette, details, palette, pose."
+    checkpoint:
+      uk: "Закінчений презентабельний об’єкт — портфоліо-піс першого півріччя."
+      en: "A finished, presentable object — the portfolio piece of the first half of the year."
+    challenge:
+      uk: "Проста поза чи вираз (персонажі) або функціональна рухома деталь (реквізит, зброя)."
+      en: "A simple pose or expression (characters) or a functional moving part (props, weapons)."
+    further:
+      - {title: "GameDev.tv — Blender Low Poly Characters (Grant Abbitt)", url: "https://gamedev.tv/courses/blender-low-poly-characters", note: {uk: "шлях від силуету до пози", en: "the path from silhouette to pose"}}
+
+  - num: 6
+    slug: 06-rigging
+    icon: bones
+    sessions: "2–3"
+    range: "15–16"
+    exercises: []
+    title:
+      uk: "Рігінг за 15 хвилин (і трохи більше)"
+      en: "Rigging in 15 minutes (and a bit more)"
+    tagline:
+      uk: "Одна відтворювана послідовність Rigify, щоб оживити власний об’єкт простим циклом."
+      en: "One repeatable Rigify sequence to bring your own object to life with a simple loop."
+    checkpoint:
+      uk: "Об’єкт блоку 5, оживлений простим циклом (хода, обертання, відкриття) через власноруч зроблений риг."
+      en: "Your block 5 object, animated with a simple loop (walk, spin, open) through a rig you built yourself."
+    challenge:
+      uk: "Розібратися зі шарами кісток і навести лад самостійно."
+      en: "Understand bone layers and tidy them up on your own."
+    further:
+      - {title: "Grant Abbitt — Easy Rigging Using Rigify in Blender", url: "https://www.youtube.com/watch?v=RdTuAY23vzk", note: {uk: "15-хвилинна послідовність", en: "the 15-minute sequence"}}
+
+  - num: 7
+    slug: 07-export
+    icon: export
+    sessions: "2–3"
+    range: "17–18"
+    exercises: []
+    title:
+      uk: "Підготовка моделі під ігровий рушій"
+      en: "Preparing a model for a game engine"
+    tagline:
+      uk: "Три речі, які ламають експорт: трансформації, масштаб і нормалі."
+      en: "Three things that break an export: transforms, scale and normals."
+    checkpoint:
+      uk: "Модель експортовано у форматі під ціль (рушій або веб) і перевірено: масштаб і нормалі не спотворені."
+      en: "The model is exported in a format for your target (engine or web) and verified: scale and normals are intact."
+    challenge:
+      uk: "Звірити Dimensions моделі з реальним розміром задуманої речі."
+      en: "Compare the model’s Dimensions with the real-world size of the thing you imagined."
+    further:
+      - {title: "StraySpark — Blender 5.x to Unreal Engine 5.7 asset pipeline (2026)", url: "https://www.strayspark.studio/blog/blender-5-to-unreal-engine-57-asset-pipeline-2026", note: {uk: "актуальний чекліст пайплайну", en: "an up-to-date pipeline checklist"}}
+
+  - num: 8
+    slug: 08-ar-showcase
+    icon: ar
+    sessions: "2"
+    range: "19–20"
+    exercises: [ar-showcase]
+    title:
+      uk: "AR-вітрина без спецобладнання"
+      en: "An AR showcase without special hardware"
+    tagline:
+      uk: "Власна модель у доповненій реальності на власному телефоні — за посиланням чи QR-кодом."
+      en: "Your own model in augmented reality on your own phone — via a link or a QR code."
+    checkpoint:
+      uk: "Модель відкривається в AR за посиланням чи QR-кодом; показано вживу «на столі» через камеру."
+      en: "The model opens in AR via a link or QR code; shown live “on the table” through the camera."
+    challenge:
+      uk: "Підібрати ракурс і освітлення (auto-rotate, camera-orbit) так, щоб модель одразу показувала себе найвигіднішим боком."
+      en: "Tune the angle and lighting (auto-rotate, camera-orbit) so the model shows its best side right away."
+    further:
+      - {title: "model-viewer (Google)", url: "https://modelviewer.dev/", note: {uk: "документація веб-компонента", en: "the web component’s documentation"}}
+      - {title: "Google for Developers — AR with model-viewer", url: "https://developers.google.com/ar/develop/webxr/model-viewer", note: {uk: "Quick Look і Scene Viewer", en: "Quick Look and Scene Viewer"}}
+
+  - num: 9
+    slug: 09-final-portfolio
+    icon: portfolio
+    sessions: "2–3"
+    range: "21–23"
+    exercises: [ar-showcase]
+    title:
+      uk: "Фінальний проєкт і портфоліо-сторінка"
+      en: "The final project and your portfolio page"
+    tagline:
+      uk: "Один закінчений, добре задокументований проєкт — і сторінка, яку не соромно показати за межами клубу."
+      en: "One finished, well-documented project — and a page you can proudly show outside the club."
+    checkpoint:
+      uk: "Опублікована портфоліо-сторінка: GLB-модель, скріншоти шляху й короткий опис."
+      en: "A published portfolio page: a GLB model, screenshots of the journey and a short description."
+    challenge:
+      uk: "Підготувати й відрепетирувати живий виступ на демо-дні (1–2 хвилини)."
+      en: "Prepare and rehearse a live talk for demo day (1–2 minutes)."
+    further: []

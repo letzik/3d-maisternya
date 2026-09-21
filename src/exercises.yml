@@ -1,0 +1,49 @@
+# Interactive exercises and templates. Page text lives in src/<lang>/exercises/<slug>.md.
+# app: path to the standalone page (relative to the site root). Exercises accept ?lang=uk|en.
+# kind: trainer | template
+
+exercises:
+  - slug: see-shapes
+    kind: trainer
+    icon: cube
+    app: apps/see-shapes.html
+    blocks: [1]
+    title:
+      uk: "Бачити Форму"
+      en: "See the Shape"
+    tagline:
+      uk: "Розклади об’єкт на прості форми й знайди справжній поворот фігури, а не її дзеркало."
+      en: "Break an object into simple shapes and find the true rotation of a figure, not its mirror image."
+    topic:
+      uk: "Просторове мислення"
+      en: "Spatial thinking"
+
+  - slug: clean-mesh
+    kind: trainer
+    icon: mesh
+    app: apps/clean-mesh.html
+    blocks: [4]
+    title:
+      uk: "Чиста Сітка"
+      en: "Clean Mesh"
+    tagline:
+      uk: "Три сітки, один згин: обери ту, що деформується передбачувано, а не ламається чи дає полюс."
+      en: "Three meshes, one bend: pick the one that deforms predictably instead of breaking or forming a pole."
+    topic:
+      uk: "Топологія"
+      en: "Topology"
+
+  - slug: ar-showcase
+    kind: template
+    icon: ar
+    app: templates/ar-showcase.{lang}.html
+    blocks: [8, 9]
+    title:
+      uk: "Шаблон AR-вітрини"
+      en: "AR showcase template"
+    tagline:
+      uk: "Готова сторінка з <model-viewer>: підстав свою .glb-модель, опублікуй і відкрий у AR на телефоні."
+      en: "A ready-made <model-viewer> page: drop in your own .glb model, publish it and open it in AR on your phone."
+    topic:
+      uk: "Публікація й AR"
+      en: "Publishing and AR"

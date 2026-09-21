@@ -1,0 +1,149 @@
+<!--
+  AR SHOWCASE TEMPLATE — 3D Workshop club        (Українською: ar-showcase.uk.html)
+
+  How to use it:
+  1. Put your model file next to this HTML and name it "model.glb"
+     (or change the src="..." line below to your own filename).
+  2. Replace the text in alt="..." — briefly describe your model.
+  3. Replace the "Project name" and description placeholders under the viewport with yours.
+  4. Publish the page (for example on GitHub Pages) — AR will NOT run
+     from a local file, you need a real https://... link on the internet.
+  5. Make a QR code for the published link (any free generator)
+     and scan it with your phone.
+
+  A demo model from the model-viewer project is used for now, so the page
+  shows a working example until you swap in your own model.
+  More: the "AR showcase template" page on the club's site.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AR showcase · 3D Workshop</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer.min.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+<style>
+  :root{
+    --bg:#161826; --panel:#20243a; --panel-2:#292d49; --viewport:#0d0f1c; --line:#333859;
+    --ink:#eceef8; --muted:#a4aac9; --accent:#8ade6e; --accent-ink:#0f1f09;
+    --font-display:"Oswald","Arial Narrow",system-ui,sans-serif;
+    --font-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-mono:"IBM Plex Mono","SFMono-Regular",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.55;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:28px 20px 70px}
+
+  header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;
+    border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:26px}
+  .club{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 8px}
+  h1{font-family:var(--font-display);font-weight:700;font-size:1.7rem;margin:0;text-wrap:balance}
+  .badge{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:5px 12px;
+    white-space:nowrap;flex:none;margin-top:2px}
+
+  .viewer-box{position:relative;background:var(--viewport);border:1px solid var(--line);border-radius:14px;
+    overflow:hidden;aspect-ratio:1/1;margin-bottom:10px}
+  model-viewer{width:100%;height:100%;--poster-color:transparent}
+  .hint{margin:0 0 30px;font-family:var(--font-mono);font-size:.7rem;color:var(--muted);
+    letter-spacing:.03em;text-align:center}
+
+  .ar-btn{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;
+    font-family:var(--font-display);font-weight:600;font-size:.9rem;letter-spacing:.02em;
+    padding:12px 22px;border-radius:999px;border:0;background:var(--accent);color:var(--accent-ink);
+    cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+  .ar-btn svg{width:18px;height:18px;flex:none}
+  .ar-btn:not([disabled]):hover{filter:brightness(1.05)}
+  .ar-btn[disabled]{display:none}
+
+  .progress-bar{display:block;width:min(70%,240px);height:4px;border-radius:999px;background:var(--panel-2);
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);overflow:hidden}
+  .progress-bar .update-bar{width:0;height:100%;background:var(--accent);transition:width .2s}
+  .progress-bar.hide{display:none}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:16px}
+  .eyebrow{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 6px}
+  h2{font-family:var(--font-display);font-size:1.2rem;font-weight:600;margin:0 0 8px}
+  .desc{color:var(--muted);font-size:.92rem;margin:0}
+
+  .checklist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0}
+  .checklist li{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line);
+    font-size:.86rem;color:var(--ink)}
+  .checklist li:first-child{border-top:0}
+  .checklist svg{width:18px;height:18px;flex:none;margin-top:1px;color:var(--accent)}
+  .checklist b{color:var(--ink)}
+  .checklist span{color:var(--muted)}
+
+  footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--line);
+    font-family:var(--font-mono);font-size:.72rem;color:var(--muted)}
+
+  @media (max-width:480px){ h1{font-size:1.4rem} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="club">3D Workshop · AR showcase</p>
+      <h1>Project name</h1>
+    </div>
+    <span class="badge">template</span>
+  </header>
+
+  <div class="viewer-box">
+    <!-- REPLACE src with your own file (put the .glb next to this page) -->
+    <model-viewer
+      src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+      alt="A short description of the model for people who cannot see the image"
+      camera-controls
+      auto-rotate
+      ar
+      ar-modes="webxr scene-viewer quick-look"
+      shadow-intensity="1"
+      exposure="0.9"
+      camera-orbit="10deg 78deg 105%"
+    >
+      <div slot="progress-bar" class="progress-bar"><div class="update-bar"></div></div>
+      <button slot="ar-button" class="ar-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M4 7.5l8 4.5 8-4.5"/><path d="M12 12v9"/></svg>
+        View in AR
+      </button>
+    </model-viewer>
+  </div>
+  <p class="hint">drag with the mouse or your finger to rotate the model</p>
+
+  <div class="panel">
+    <p class="eyebrow">About the project</p>
+    <h2>The model in brief</h2>
+    <p class="desc">Placeholder description: replace it with a few sentences — what the project is, the hardest part of the work, what you learned. This is what someone reads when they open the link without a live explanation.</p>
+  </div>
+
+  <div class="panel">
+    <p class="eyebrow">Before you publish</p>
+    <ul class="checklist">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9"/></svg><span><b>Scale and Apply Transform</b> are checked (block 7) — the model doesn’t look too big or too small in AR</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9"/></svg><span><b>Normals are recalculated</b> — no black or missing faces</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9"/></svg><span><b>The page is published</b> (not a local file) — otherwise the AR button won’t work on the phone</span></li>
+    </ul>
+  </div>
+
+  <footer>3D Workshop club · AR showcase template (block 8) — copy the file and update it for your project</footer>
+</div>
+<script type="module">
+  /* progress bar: fills while the model loads and hides when it is done */
+  const mv = document.querySelector("model-viewer");
+  const bar = mv.querySelector(".progress-bar");
+  const fill = mv.querySelector(".update-bar");
+  mv.addEventListener("progress", (e) => {
+    fill.style.width = (e.detail.totalProgress * 100) + "%";
+    if (e.detail.totalProgress === 1) bar.classList.add("hide");
+  });
+</script>
+</body>
+</html>

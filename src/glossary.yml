@@ -1,0 +1,185 @@
+# Glossary. In block texts write [[term:<id>]] (or [[term:<id>|shown text]]) and the builder
+# turns it into a link, and adds a "Used in" list to the term's entry automatically.
+# def supports the same inline syntax: [[key:Ctrl+B]], [[term:other]], **bold**, `code`.
+
+terms:
+  primitive:
+    uk: {term: "Примітив", def: "Найпростіша готова 3D-форма: куб, куля, циліндр, конус, тор, площина. З примітивів починається будь-який блокаут."}
+    en: {term: "Primitive", def: "The simplest ready-made 3D shape: box, sphere, cylinder, cone, torus, plane. Every blockout starts with primitives."}
+    see: [blockout, silhouette]
+  blockout:
+    uk: {term: "Блокаут", def: "Груба збірка форми з простих блоків без деталізації. Мета — пропорції цілого, а не краса."}
+    en: {term: "Blockout", def: "A rough build of a form from simple blocks with no detailing. The goal is the proportions of the whole, not beauty."}
+    see: [primitive, silhouette]
+  silhouette:
+    uk: {term: "Силует", def: "Контур об’єкта, який читається одним поглядом. Якщо силует не впізнається, деталі його не врятують."}
+    en: {term: "Silhouette", def: "The outline of an object that reads at a single glance. If the silhouette isn’t recognizable, details won’t save it."}
+    see: [blockout]
+  viewport:
+    uk: {term: "В’юпорт", def: "Вікно Blender, у якому ви бачите й редагуєте 3D-сцену."}
+    en: {term: "Viewport", def: "The Blender window where you see and edit the 3D scene."}
+    see: [orthographic, matcap]
+  modifier:
+    uk: {term: "Модифікатор", def: "Неруйнівна операція над сіткою (Mirror, Subdivision Surface, Boolean, Shrinkwrap, Decimate). Її можна змінювати або вимкнути, поки вона не застосована."}
+    en: {term: "Modifier", def: "A non-destructive operation on a mesh (Mirror, Subdivision Surface, Boolean, Shrinkwrap, Decimate). You can change or disable it until it is applied."}
+    see: [mirror, subdivision, boolean]
+  mirror:
+    uk: {term: "Mirror", def: "Модифікатор, що дзеркалить половину об’єкта відносно осі: редагуєте одну половину — готові обидві. Вмикається першим."}
+    en: {term: "Mirror", def: "A modifier that mirrors half of an object across an axis: edit one half and both are done. Turn it on first."}
+    see: [origin, modifier]
+  extrude:
+    uk: {term: "Extrude", def: "Витягує грань чи ребро в нову геометрію ([[key:E]]). Так з куба «виростає» ніс, виступ, дуло."}
+    en: {term: "Extrude", def: "Pulls a face or an edge out into new geometry ([[key:E]]). This is how a nose, a bump or a barrel “grows” from a cube."}
+    see: [inset, bevel]
+  inset:
+    uk: {term: "Inset", def: "Вставляє меншу грань усередину обраної ([[key:I]]) — готує ділянку під наступний Extrude."}
+    en: {term: "Inset", def: "Creates a smaller face inside the selected one ([[key:I]]) — it prepares an area for the next Extrude."}
+    see: [extrude]
+  bevel:
+    uk: {term: "Bevel", def: "Скошує гостре ребро ([[key:Ctrl+B]]) і прибирає «пластиковий» вигляд низькополігональної форми."}
+    en: {term: "Bevel", def: "Chamfers a sharp edge ([[key:Ctrl+B]]) and removes the “plastic” look of a low-poly form."}
+    see: [extrude, subdivision]
+  loop-cut:
+    uk: {term: "Loop Cut", def: "Додає петлю ребер упоперек форми ([[key:Ctrl+R]]) — ділянку для локальної деталізації."}
+    en: {term: "Loop Cut", def: "Adds a loop of edges across a form ([[key:Ctrl+R]]) — an area for local detailing."}
+    see: [knife, edge-flow]
+  knife:
+    uk: {term: "Knife", def: "Ріже сітку по довільній лінії, яку ви малюєте по поверхні ([[key:K]]). На відміну від Loop Cut, лінія не мусить бути рівною петлею."}
+    en: {term: "Knife", def: "Cuts the mesh along any line you draw across the surface ([[key:K]]). Unlike Loop Cut, the line doesn’t have to be a straight loop."}
+    see: [loop-cut]
+  subdivision:
+    uk: {term: "Subdivision Surface", def: "Модифікатор, що згладжує кутасту форму до органічної. Це не «кнопка краси»: він підсилює топологію, яка вже є, — і кутасту, і вивірену."}
+    en: {term: "Subdivision Surface", def: "A modifier that smooths an angular form into an organic one. It is not a “beauty button”: it amplifies the topology you already have — messy or clean."}
+    see: [edge-flow, topology, modifier]
+  boolean:
+    uk: {term: "Boolean", def: "Модифікатор, що вирізає чи додає об’єм за формою іншого об’єкта. Швидкий, але крихкий: часто залишає неакуратну сітку."}
+    en: {term: "Boolean", def: "A modifier that cuts or adds volume using the shape of another object. Fast but fragile: it often leaves a messy mesh."}
+    see: [merge, apply-transform]
+  merge:
+    uk: {term: "Merge", def: "З’єднує вершини чи окремі об’єкти в одну сітку ([[key:M]] → At Center / By Distance). Простий і надійний спосіб збирати модель із частин."}
+    en: {term: "Merge", def: "Joins vertices or separate objects into one mesh ([[key:M]] → At Center / By Distance). A simple, reliable way to assemble a model from parts."}
+    see: [boolean]
+  origin:
+    uk: {term: "Origin", def: "Центр обертання й масштабування об’єкта. Від нього залежить, як працюють Mirror, обертання рухомих деталей і риг."}
+    en: {term: "Origin", def: "The object’s pivot point for rotation and scaling. Mirror, moving parts and rigs all depend on it."}
+    see: [mirror, parent]
+  apply-transform:
+    uk: {term: "Apply Transform", def: "Записує масштаб, поворот і положення об’єкта в саму геометрію (Object → Apply → All Transforms). Без цього Boolean, Merge та експорт можуть «з’їхати»."}
+    en: {term: "Apply Transform", def: "Bakes an object’s scale, rotation and location into its geometry (Object → Apply → All Transforms). Without it Boolean, Merge and exports can go wrong."}
+    see: [boolean, glb]
+  material:
+    uk: {term: "Матеріал", def: "Опис кольору й вигляду поверхні. Призначаючи матеріали граням, ви фарбуєте модель без UV-розгортки. Для експорту потрібен справжній матеріал із Base Color."}
+    en: {term: "Material", def: "A description of a surface’s color and look. Assigning materials to faces colors the model without UV unwrapping. Export needs a real material with a Base Color."}
+    see: [vertex-paint, uv]
+  vertex-paint:
+    uk: {term: "Vertex Paint", def: "Розфарбування безпосередньо вершин чи граней — ще один спосіб отримати колір без UV-розгортки."}
+    en: {term: "Vertex Paint", def: "Painting directly on vertices or faces — another way to get color without UV unwrapping."}
+    see: [material]
+  uv:
+    uk: {term: "UV-розгортка", def: "Розгортання 3D-моделі на площину, як шкурку яблука, щоб малювати на ній текстуру. Клуб на початку свідомо її пропускає."}
+    en: {term: "UV unwrapping", def: "Flattening a 3D model onto a plane, like an apple’s peel, so you can paint a texture on it. The club deliberately skips it at the start."}
+    see: [material]
+  reference:
+    uk: {term: "Референс", def: "Зображення, з яким ви звіряєте модель: вигляд спереду, збоку, креслення. Замість «на око» — за реальними пропорціями."}
+    en: {term: "Reference", def: "An image you check your model against: front view, side view, blueprint. Real proportions instead of “by eye”."}
+    see: [orthographic, viewport]
+  orthographic:
+    uk: {term: "Ортографічний вигляд", def: "Вигляд без перспективи (Front, Side, Top). Саме такі зображення потрібні як референси, бо перспектива спотворює пропорції."}
+    en: {term: "Orthographic view", def: "A view without perspective (Front, Side, Top). These are the images you need as references, because perspective distorts proportions."}
+    see: [reference]
+  topology:
+    uk: {term: "Топологія", def: "Те, як побудована сітка всередині форми: скільки й яких граней, де проходять петлі. Від неї залежить, чи витримає модель згин."}
+    en: {term: "Topology", def: "How the mesh is built inside a form: how many and what kind of faces, where the loops run. It decides whether a model survives bending."}
+    see: [quad, edge-flow, retopology]
+  quad:
+    uk: {term: "Quad", def: "Чотирикутна грань. Основа чистої сітки: підтримує Loop Cut, Subdivision і передбачувану деформацію."}
+    en: {term: "Quad", def: "A four-sided face. The basis of a clean mesh: it supports Loop Cut, Subdivision and predictable deformation."}
+    see: [ngon, pole, topology]
+  ngon:
+    uk: {term: "N-кутник", def: "Грань із п’ятьма й більше кутами. Швидко закриває плоску ділянку, але погано деформується, особливо в зоні згину."}
+    en: {term: "N-gon", def: "A face with five or more corners. It quickly fills a flat area but deforms poorly, especially in a bend zone."}
+    see: [quad, pole]
+  pole:
+    uk: {term: "Полюс", def: "Вершина, де сходиться забагато ребер (типово — трикутне «віяло»). Поганий у зоні згину, бо там сітка деформується непередбачувано."}
+    en: {term: "Pole", def: "A vertex where too many edges meet (typically a triangle “fan”). Bad in a bend zone because the mesh deforms unpredictably there."}
+    see: [quad, edge-flow]
+  edge-flow:
+    uk: {term: "Edge flow", def: "Напрямок петель ребер. Вони мають іти навколо суглоба, як кільця навколо пальця, а не крізь нього."}
+    en: {term: "Edge flow", def: "The direction of edge loops. They should run around a joint, like rings around a finger, not through it."}
+    see: [topology, matcap]
+  matcap:
+    uk: {term: "MatCap", def: "Режим відображення з відбиваючим матеріалом без текстур. На кривій сітці відбиття «пливуть» — швидкий візуальний тест топології."}
+    en: {term: "MatCap", def: "A shading mode with a reflective material and no textures. On a bad mesh the reflections “swim” — a quick visual test of topology."}
+    see: [edge-flow, viewport]
+  retopology:
+    uk: {term: "Ретопологія", def: "Побудова нової чистої сітки поверх старої форми — вручну чи з допомогою Shrinkwrap і Decimate."}
+    en: {term: "Retopology", def: "Building a new clean mesh over an old form — by hand or with help from Shrinkwrap and Decimate."}
+    see: [shrinkwrap, decimate, topology]
+  shrinkwrap:
+    uk: {term: "Shrinkwrap", def: "Модифікатор, що притягує нову чисту сітку до поверхні старої форми. Стоїть вище за Mirror і Subdivision у стеку."}
+    en: {term: "Shrinkwrap", def: "A modifier that pulls a new clean mesh onto the surface of an old form. Place it above Mirror and Subdivision in the stack."}
+    see: [retopology]
+  decimate:
+    uk: {term: "Decimate", def: "Модифікатор, що швидко спрощує занадто важку сітку. Чорновий варіант, не заміна ручної ретопології."}
+    en: {term: "Decimate", def: "A modifier that quickly simplifies a mesh that is too heavy. A rough option, not a substitute for manual retopology."}
+    see: [retopology, lod]
+  lod:
+    uk: {term: "LOD-мислення", def: "Різний рівень деталізації для різних частин чи відстаней: обличчя, яке видно зблизька, вартує більше полігонів, ніж підошва."}
+    en: {term: "LOD thinking", def: "Different levels of detail for different parts or distances: a face seen up close deserves more polygons than a shoe sole."}
+    see: [decimate]
+  parent:
+    uk: {term: "Parent", def: "Зв’язок «батько — дочірній» між об’єктами ([[key:Ctrl+P]]). Рухома деталь тоді обертається навколо правильної точки, а не довільної."}
+    en: {term: "Parent", def: "A “parent — child” link between objects ([[key:Ctrl+P]]). A moving part then rotates about the right point, not an arbitrary one."}
+    see: [origin, armature]
+  armature:
+    uk: {term: "Арматура (риг)", def: "Каркас із кісток, який рухає сітку моделі. Створюється для конкретного руху, який ви вже уявляєте."}
+    en: {term: "Armature (rig)", def: "A skeleton of bones that moves a model’s mesh. You build it for a specific movement you already imagine."}
+    see: [rigify, weight-paint]
+  rigify:
+    uk: {term: "Rigify", def: "Аддон Blender із готовими шаблонами ригів (мета-риг → Generate Rig). Дає результат за одне заняття без ручної побудови кожної кістки."}
+    en: {term: "Rigify", def: "A Blender add-on with ready-made rig templates (meta-rig → Generate Rig). It gets you a result in one session without building every bone by hand."}
+    see: [armature, weight-paint]
+  weight-paint:
+    uk: {term: "Weight Paint", def: "Ручне малювання того, яка частина сітки належить якій кістці. Швидка латка для місць, де Automatic Weights помилився."}
+    en: {term: "Weight Paint", def: "Painting by hand which part of the mesh belongs to which bone. A quick patch for places where Automatic Weights got it wrong."}
+    see: [rigify, keyframe]
+  keyframe:
+    uk: {term: "Ключовий кадр", def: "Збережене положення об’єкта в конкретний момент часу. Кілька ключових кадрів — це вже простий цикл руху."}
+    en: {term: "Keyframe", def: "A saved position of an object at a given moment in time. A few keyframes make a simple motion loop."}
+    see: [armature]
+  normals:
+    uk: {term: "Нормалі", def: "Напрямки, куди «дивляться» грані. Грань з неправильною нормаллю після експорту чорніє чи зникає. Швидке виправлення — Recalculate ([[key:Shift+N]])."}
+    en: {term: "Normals", def: "The directions faces “look” in. A face with a wrong normal turns black or disappears after export. The quick fix is Recalculate ([[key:Shift+N]])."}
+    see: [glb, apply-transform]
+  glb:
+    uk: {term: "GLB", def: "Компактний формат 3D-файлу, що надійно відкривається прямо в браузері. Підходить для вебу, Godot і власної AR-вітрини."}
+    en: {term: "GLB", def: "A compact 3D file format that opens reliably right in the browser. Good for the web, Godot and your own AR showcase."}
+    see: [fbx, model-viewer]
+  fbx:
+    uk: {term: "FBX", def: "Найперевіреніший формат для ігрових рушіїв Unity і Unreal Engine."}
+    en: {term: "FBX", def: "The most proven format for the Unity and Unreal Engine game engines."}
+    see: [glb]
+  model-viewer:
+    uk: {term: "model-viewer", def: "Веб-компонент Google: вставляє GLB-модель у звичайну сторінку й одним дотиком відкриває AR на телефоні."}
+    en: {term: "model-viewer", def: "A Google web component: it puts a GLB model into an ordinary page and opens AR on a phone with one tap."}
+    see: [glb, ar]
+  ar:
+    uk: {term: "AR (доповнена реальність)", def: "Показ 3D-моделі «в реальному просторі» через камеру телефона. На iOS це Quick Look, на Android — Scene Viewer; окремий застосунок не потрібен."}
+    en: {term: "AR (augmented reality)", def: "Showing a 3D model “in real space” through a phone camera. On iOS it is Quick Look, on Android Scene Viewer; no separate app is needed."}
+    see: [model-viewer, qr-code]
+  qr-code:
+    uk: {term: "QR-код", def: "Зображення, яке телефон скануює й переходить за посиланням. Генеруйте його лише на опубліковану адресу https://, а не на локальний файл."}
+    en: {term: "QR code", def: "An image a phone scans to open a link. Generate it only for a published https:// address, never for a local file."}
+    see: [ar, github-pages]
+  github-pages:
+    uk: {term: "GitHub Pages", def: "Безкоштовний хостинг статичних сторінок. Саме там живе сайт клубу — і там же з’являться ваші портфоліо-сторінки й AR-вітрини."}
+    en: {term: "GitHub Pages", def: "Free hosting for static pages. The club’s site lives there — and so will your portfolio pages and AR showcases."}
+    see: [qr-code, model-viewer]
+  checkpoint:
+    uk: {term: "Чекпоінт", def: "Реальний артефакт, яким завершується блок. Проміжні версії зберігайте окремими файлами (`_крок1.blend`, `_крок2.blend`) — так можна наздогнати пропущене."}
+    en: {term: "Checkpoint", def: "The real artifact a block ends with. Keep intermediate versions as separate files (`_step1.blend`, `_step2.blend`) so you can catch up on anything you missed."}
+    see: [challenge]
+  challenge:
+    uk: {term: "Виклик", def: "Ускладнення того самого завдання для тих, хто впорався швидше або вже має досвід. Це не окремий трек, а надбудова."}
+    en: {term: "Challenge", def: "A harder version of the same task for those who finish sooner or already have experience. Not a separate track — an add-on."}
+    see: [checkpoint]

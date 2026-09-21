@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Чиста Сітка — 3D-Майстерня</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#161826; --panel:#20243a; --panel-2:#292d49; --viewport:#0d0f1c; --line:#333859;
+    --ink:#eceef8; --muted:#a4aac9; --accent:#8ade6e; --accent-ink:#0f1f09;
+    --ok:#5fc98a; --bad:#e8636b; --warn:#f0a840;
+    --font-display:"Oswald","Arial Narrow",system-ui,sans-serif;
+    --font-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-mono:"IBM Plex Mono","SFMono-Regular",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;line-height:1.5}
+  a{color:var(--accent)}
+  .wrap{max-width:1080px;margin:0 auto;padding:18px 20px 60px}
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    flex-wrap:wrap;padding-block:6px 18px;border-bottom:1px solid var(--line);margin-bottom:22px}
+  .brand{display:flex;align-items:baseline;gap:10px}
+  .brand h1{font-family:var(--font-display);font-weight:700;font-size:1.5rem;margin:0;
+    letter-spacing:.01em;text-wrap:balance}
+  .brand .club{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.1em}
+  .hud{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .langswitch{display:flex;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:3px;gap:2px}
+  .langswitch button{font-family:var(--font-mono);font-size:.72rem;font-weight:600;letter-spacing:.04em;
+    padding:7px 10px;border-radius:6px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+  .langswitch button.active{background:var(--ink);color:var(--bg)}
+  .score{font-family:var(--font-mono);font-size:.82rem;color:var(--muted);white-space:nowrap}
+  .score b{color:var(--ink);font-weight:600}
+  .score .streak{color:var(--accent)}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:20px}
+  .eyebrow{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 6px}
+  h2{font-family:var(--font-display);font-size:1.15rem;font-weight:600;margin:0 0 8px;text-wrap:balance}
+  .lede{font-size:.92rem;color:var(--muted);max-width:68ch;margin:0}
+  .lede b{color:var(--ink)}
+
+  .viewport{position:relative;background:var(--viewport);border:1px solid var(--line);border-radius:10px;
+    overflow:hidden;aspect-ratio:1/1;touch-action:none;cursor:grab}
+  .viewport:active{cursor:grabbing}
+  .viewport canvas{display:block;width:100%;height:100%}
+  .viewport .hint{position:absolute;left:10px;bottom:9px;font-family:var(--font-mono);font-size:.68rem;
+    color:#6b7385;pointer-events:none;letter-spacing:.03em}
+
+  .candgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .cand{border-radius:10px;padding:8px;border:1.5px solid var(--line);background:var(--panel-2)}
+  .cand .label{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);text-align:center;padding:8px 0 4px}
+  .cand .why{font-size:.8rem;color:var(--muted);text-align:center;padding:0 6px 6px;min-height:2.4em}
+  .cand button.pick{width:100%;font-family:var(--font-display);font-weight:600;font-size:.82rem;
+    padding:8px;border-radius:6px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+  .cand button.pick:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  .cand button.pick:disabled{opacity:.5;cursor:default}
+  .cand.correct{border-color:var(--ok)}
+  .cand.correct .why{color:var(--ok)}
+  .cand.wrong{border-color:var(--bad)}
+  .cand.wrong .why{color:var(--bad)}
+
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:8px;font-size:.88rem;border:1px solid var(--line);display:none}
+  .feedback.show{display:block}
+  .feedback.ok{border-color:var(--ok);color:var(--ok)}
+  .feedback.bad{border-color:var(--bad);color:var(--bad)}
+  .rowbtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  button.ghost{font-family:var(--font-display);font-weight:600;font-size:.88rem;letter-spacing:.02em;
+    padding:11px 20px;border-radius:8px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+
+  footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);
+    font-family:var(--font-mono);font-size:.74rem;color:var(--muted)}
+
+  @media (max-width:760px){ header{flex-direction:column;align-items:flex-start} }
+
+  /* ---------- link back to the site ---------- */
+  .sitebar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;max-width:1080px;margin:0 auto;padding:12px 20px 0;
+    font-family:var(--font-mono);font-size:.74rem;color:var(--muted)}
+  .sitebar a{color:var(--muted);text-decoration:none}.sitebar a:hover{color:var(--ink);text-decoration:underline}
+  .sitebar .sep{opacity:.5}
+</style>
+</head>
+<body>
+<nav class="sitebar" id="sitebar" aria-label="Site"><a class="sb-home" href="../uk/index.html">3D-Майстерня</a><span class="sep">/</span><a class="sb-list" href="../uk/exercises/index.html">Вправи</a><span class="sep">/</span><a class="sb-page" href="../uk/exercises/clean-mesh.html">Про вправу</a></nav>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <h1 id="txt-h1">Чиста Сітка</h1>
+      <span class="club" id="txt-club">3D-Майстерня · тренажер</span>
+    </div>
+    <div class="hud">
+      <div class="langswitch">
+        <button id="btn-lang-uk">УКР</button>
+        <button id="btn-lang-en">EN</button>
+      </div>
+      <div class="score">
+        <span id="txt-lbl-score">рахунок</span> <b id="score-txt">0/0</b> · <span id="txt-lbl-streak">серія</span> <b class="streak" id="streak-txt">0</b>
+      </div>
+    </div>
+  </header>
+
+  <div class="panel">
+    <div class="eyebrow" id="txt-eyebrow">Три сітки, один і той самий згин</div>
+    <h2 id="txt-title">Яка сітка деформується передбачувано?</h2>
+    <p class="lede" id="txt-lede">Усі три панелі згинаються на одну й ту саму мить одним і тим самим кутом — дивись, як кожна поводиться. Обери ту, чия сітка витримає такий згин у грі чи анімації, не зламавшись і не давши проблемної точки.</p>
+  </div>
+
+  <div class="panel">
+    <div class="candgrid" id="cands"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="rowbtns">
+      <button class="ghost" id="next-btn" style="display:none">Наступний раунд →</button>
+    </div>
+  </div>
+
+  <footer id="txt-footer">Гурток «3D-Майстерня» · тренажер для домашньої практики між заняттями</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var NEUTRAL = 0xc7cedb;
+  var OK_HEX = 0x5fc98a, BAD_HEX = 0xe8636b, WARN_HEX = 0xf0a840;
+
+  /* ============================================================
+     Двомовність — той самий підхід, що в «Бачити Форму»
+     ============================================================ */
+  var LANG_KEY = "topologiya-lang";
+  function detectLang(){
+    try{
+      var n = ((navigator.language || navigator.userLanguage || "") + "").toLowerCase();
+      if(n.indexOf("en") === 0) return "en";
+    }catch(e){}
+    return "uk";
+  }
+  var LANG = (function(){
+    try{ var q = new URLSearchParams(location.search).get("lang"); if(q==="uk"||q==="en") return q; }catch(e){}
+    try{ var shared = localStorage.getItem("3dm-lang"); if(shared==="uk"||shared==="en") return shared; }catch(e){}
+    try{ var saved = localStorage.getItem(LANG_KEY); if(saved==="uk"||saved==="en") return saved; }catch(e){}
+    return detectLang();
+  })();
+  function saveLang(){
+    try{ localStorage.setItem(LANG_KEY, LANG); localStorage.setItem("3dm-lang", LANG); }catch(e){}
+    try{ var u = new URL(location.href); u.searchParams.set("lang", LANG); history.replaceState(null, "", u); }catch(e){}
+  }
+
+  /* ---------- link back to the site (follows the current language) ---------- */
+  var SITEBAR = {
+    uk: {home:"3D-Майстерня", list:"Вправи", page:"Про вправу"},
+    en: {home:"3D Workshop",  list:"Exercises", page:"About this exercise"}
+  };
+  function applySiteBar(){
+    var t = SITEBAR[LANG], sb = document.getElementById("sitebar");
+    if(!sb || !t) return;
+    var a = sb.querySelector(".sb-home"), b = sb.querySelector(".sb-list"), c = sb.querySelector(".sb-page");
+    a.textContent = t.home; a.href = "../" + LANG + "/index.html";
+    b.textContent = t.list; b.href = "../" + LANG + "/exercises/index.html";
+    c.textContent = t.page; c.href = "../" + LANG + "/exercises/clean-mesh.html";
+  }
+
+  var STR = {
+    uk: {
+      h1:"Чиста Сітка", club:"3D-Майстерня · тренажер",
+      lblScore:"рахунок", lblStreak:"серія",
+      eyebrow:"Три сітки, один і той самий згин",
+      title:"Яка сітка деформується передбачувано?",
+      lede:"Усі три панелі згинаються на одну й ту саму мить одним і тим самим кутом — дивись, як кожна поводиться. Обери ту, чия сітка витримає такий згин у грі чи анімації, не зламавшись і не давши проблемної точки.",
+      pick:"Обрати", next:"Наступний раунд →",
+      labelWord:"Варіант", letters:"АБВ",
+      whyCorrect:"Рівномірні петлі саме в зоні згину — чисті чотирикутники, жодного полюса.",
+      whySparse:"Замало петель у зоні згину — поверхня ламається різким зламом, а не гнеться.",
+      whyPole:"Трикутний віяльний полюс точно в зоні найбільшого згину — найгірше можливе місце для нього.",
+      fbOk:"Так — ця сітка деформується передбачувано. Подивись, як плавно вона гнеться порівняно з іншими двома.",
+      fbWrongSparse:"Ні — це якраз та сітка, де петель замало: дивись, як вона ламається одним різким зламом.",
+      fbWrongPole:"Ні — тут трикутний полюс точно в зоні згину, у найгіршому можливому місці.",
+      footer:"Гурток «3D-Майстерня» · тренажер для домашньої практики між заняттями"
+    },
+    en: {
+      h1:"Clean Mesh", club:"3D Workshop · trainer",
+      lblScore:"score", lblStreak:"streak",
+      eyebrow:"Three meshes, one and the same bend",
+      title:"Which mesh deforms predictably?",
+      lede:"All three panels bend at the same moment through the same angle — watch how each one behaves. Pick the one whose topology will hold up to that bend in a game or animation, without breaking or creating a problem point.",
+      pick:"Choose", next:"Next round →",
+      labelWord:"Option", letters:"ABC",
+      whyCorrect:"Even loops right where the bend happens — clean quads, no pole.",
+      whySparse:"Too few loops in the bend zone — the surface creases sharply instead of curving.",
+      whyPole:"A triangle-fan pole sits right at the point of maximum bend — the worst possible place for one.",
+      fbOk:"Yes — this mesh deforms predictably. Watch how smoothly it bends compared to the other two.",
+      fbWrongSparse:"No — this is the one with too few loops: watch it crease in one sharp fold.",
+      fbWrongPole:"No — this one has a triangle pole right in the bend zone, the worst place for it.",
+      footer:"3D Workshop club · practice trainer for between sessions"
+    }
+  };
+  function S(){ return STR[LANG]; }
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+
+  /* ============================================================
+     Геометрія: одна й та сама гладка дуга згину для всіх варіантів —
+     панелі відрізняються лише тим, ЯКІ ряди петель на ній стоять.
+     Замкнена формула (без числового інтегрування), тож перебудова
+     позицій під час анімації — дешева операція.
+     ============================================================ */
+  var W = 0.55; // половина ширини зони згину вздовж s
+  function curveYZ(s, theta){
+    var th = Math.abs(theta) < 1e-4 ? 1e-4 : theta;
+    var R = (2*W) / th;
+    if(s <= -W) return { y:0, z:s };
+    if(s >= W){
+      var endY = -R*(1-Math.cos(th)), endZ = -W + R*Math.sin(th);
+      return { y: endY + Math.sin(th)*(s-W), z: endZ + Math.cos(th)*(s-W) };
+    }
+    var p = (s+W)/(2*W), a = th*p;
+    return { y: -R*(1-Math.cos(a)), z: -W + R*Math.sin(a) };
+  }
+
+  var DENSE_ROWS  = [-1.4,-1.0,-0.68,-0.42,-0.3,-0.2,-0.1,0,0.1,0.2,0.3,0.42,0.68,1.0,1.4];
+  var SPARSE_ROWS = [-1.4, 0, 1.4];
+  var POLE_AT = DENSE_ROWS.indexOf(0);
+
+  function buildBendMesh(rows, colCount, theta, poleAt){
+    var xs = [];
+    for(var c=0;c<colCount;c++) xs.push(-1.2 + c*(2.4/(colCount-1)));
+    var positions = [], rowStart = [];
+    rows.forEach(function(s, ri){
+      rowStart.push(positions.length/3);
+      var yz = curveYZ(s, theta);
+      if(ri === poleAt){
+        positions.push(0, yz.y, yz.z);
+      } else {
+        for(var c=0;c<colCount;c++) positions.push(xs[c], yz.y, yz.z);
+      }
+    });
+    var indices = [];
+    for(var ri=0; ri<rows.length-1; ri++){
+      var aStart = rowStart[ri], bStart = rowStart[ri+1];
+      var aPole = (ri===poleAt), bPole = (ri+1===poleAt);
+      if(!aPole && !bPole){
+        for(var i=0;i<colCount-1;i++){
+          var a0=aStart+i, a1=aStart+i+1, b0=bStart+i, b1=bStart+i+1;
+          indices.push(a0,a1,b1, a0,b1,b0);
+        }
+      } else if(bPole){
+        var p1 = bStart;
+        for(var j=0;j<colCount-1;j++) indices.push(aStart+j, aStart+j+1, p1);
+      } else {
+        var p2 = aStart;
+        for(var k=0;k<colCount-1;k++) indices.push(p2, bStart+k+1, bStart+k);
+      }
+    }
+    return { positions: new Float32Array(positions), indices: indices };
+  }
+
+  function makeBendVariant(rows, colCount, poleAt){
+    var group = new THREE.Group();
+    var obj = { group: group, revealColor: null };
+    obj.rebuild = function(theta){
+      while(group.children.length){
+        var c = group.children.pop();
+        c.traverse(function(o){ if(o.geometry) o.geometry.dispose(); if(o.material) o.material.dispose(); });
+      }
+      var built = buildBendMesh(rows, colCount, theta, poleAt);
+      var geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.BufferAttribute(built.positions, 3));
+      geo.setIndex(built.indices);
+      geo.computeVertexNormals();
+      var mat = new THREE.MeshStandardMaterial({
+        color: obj.revealColor!=null ? obj.revealColor : NEUTRAL,
+        roughness:0.55, metalness:0.05, side:THREE.DoubleSide
+      });
+      var mesh = new THREE.Mesh(geo, mat);
+      var edges = new THREE.LineSegments(
+        new THREE.EdgesGeometry(geo, 1),
+        new THREE.LineBasicMaterial({color:0x0b0d11, transparent:true, opacity:0.55})
+      );
+      mesh.add(edges);
+      group.add(mesh);
+    };
+    return obj;
+  }
+
+  /* ============================================================
+     Дрібний в’юпорт-хелпер (як у «Бачити Форму»)
+     ============================================================ */
+  function makeViewport(container, opts){
+    opts = opts || {};
+    container.getBoundingClientRect();
+    var w = container.clientWidth || 300, h = container.clientHeight || 300;
+    var renderer = new THREE.WebGLRenderer({antialias:true, alpha:false});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+    // updateStyle=false: не давати three.js писати інлайновий style.width/height —
+    // у сітці карток (auto-fit grid) ширина контейнера під час побудови ще не
+    // стабільна (кожна картка бачить інший проміжний clientWidth, поки додаються
+    // сусідні), і інлайновий px-розмір від setSize() перекрив би наш CSS width:100%,
+    // через що канвас виривався за межі контейнера й показував порожній кут сцени.
+    renderer.setSize(w, h, false);
+    renderer.setClearColor(0x0b0d11, 1);
+    var oldCanvas = container.querySelector(":scope > canvas");
+    if(oldCanvas) container.removeChild(oldCanvas);
+    container.insertBefore(renderer.domElement, container.firstChild);
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(42, w/h, 0.1, 100);
+    camera.position.set(0, 0.9, opts.dist || 5.2);
+    camera.lookAt(0,0,0);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+    var dl = new THREE.DirectionalLight(0xffffff, 0.9); dl.position.set(3,4,5); scene.add(dl);
+    var dl2 = new THREE.DirectionalLight(0x88aaff, 0.25); dl2.position.set(-3,-2,-4); scene.add(dl2);
+
+    var group = new THREE.Group();
+    scene.add(group);
+
+    var vp = { renderer:renderer, scene:scene, camera:camera, group:group, alive:true };
+    function render(){ if(!vp.alive) return; renderer.render(scene, camera); requestAnimationFrame(render); }
+    render();
+
+    if(opts.draggable){
+      var dragging=false, lastX=0, lastY=0;
+      var el = renderer.domElement;
+      el.addEventListener("pointerdown", function(e){ dragging=true; lastX=e.clientX; lastY=e.clientY; el.setPointerCapture(e.pointerId); });
+      el.addEventListener("pointermove", function(e){
+        if(!dragging) return;
+        var dx=e.clientX-lastX, dy=e.clientY-lastY; lastX=e.clientX; lastY=e.clientY;
+        group.rotation.y += dx*0.008; group.rotation.x += dy*0.008;
+      });
+      window.addEventListener("pointerup", function(){ dragging=false; });
+    }
+    vp.dispose = function(){ vp.alive = false; renderer.dispose(); };
+    vp.resize = function(){
+      if(!vp.alive) return;
+      var w2 = container.clientWidth, h2 = container.clientHeight;
+      if(!w2||!h2) return;
+      renderer.setSize(w2,h2,false); camera.aspect = w2/h2; camera.updateProjectionMatrix();
+    };
+    return vp;
+  }
+  var liveViewports = [];
+  window.addEventListener("resize", function(){ liveViewports.forEach(function(v){ v.resize(); }); });
+
+  /* ============================================================
+     Рахунок
+     ============================================================ */
+  var STATS_KEY = "topologiya-stats-v1";
+  function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || {correct:0,total:0,streak:0}; }catch(e){ return {correct:0,total:0,streak:0}; } }
+  function saveStats(s){ try{ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }catch(e){} }
+  var stats = loadStats();
+  function renderStats(){
+    document.getElementById("score-txt").textContent = stats.correct+"/"+stats.total;
+    document.getElementById("streak-txt").textContent = stats.streak;
+  }
+  function recordResult(ok){
+    stats.total++; if(ok){ stats.correct++; stats.streak++; } else { stats.streak = 0; }
+    saveStats(stats); renderStats();
+  }
+  renderStats();
+
+  /* ============================================================
+     Раунд
+     ============================================================ */
+  var t = { slots:null, variants:null, viewports:null, picked:null, thetaMax:0, correctIdx:-1, colCount:5 };
+
+  function whyText(kind){
+    if(kind==="correct") return S().whyCorrect;
+    if(kind==="sparse") return S().whySparse;
+    return S().whyPole;
+  }
+
+  function newRound(){
+    document.getElementById("feedback").className = "feedback";
+    document.getElementById("next-btn").style.display = "none";
+    t.picked = null;
+    // Кут навмисно не наближається до 90° — за ним будь-яка сітка (навіть чиста)
+    // закручується "за себе" й оптично зникає з кадру, що фальшиво видає правильну
+    // відповідь за порожню. У безпечному діапазоні лишається лише реальна відмінність.
+    t.thetaMax = (42 + Math.random()*28) * Math.PI/180;
+    t.colCount = pick([4,5,6]);
+
+    var slots = shuffle([
+      { kind:"correct", rows:DENSE_ROWS,  poleAt:-1 },
+      { kind:"sparse",  rows:SPARSE_ROWS, poleAt:-1 },
+      { kind:"pole",    rows:DENSE_ROWS,  poleAt:POLE_AT }
+    ]);
+    t.slots = slots;
+    t.correctIdx = slots.findIndex(function(s){ return s.kind==="correct"; });
+
+    if(t.viewports){ t.viewports.forEach(function(v){ v.dispose(); }); }
+    liveViewports = [];
+    var grid = document.getElementById("cands");
+    grid.innerHTML = "";
+    t.variants = []; t.viewports = [];
+
+    slots.forEach(function(slot, i){
+      var card = document.createElement("div");
+      card.className = "cand";
+      var vpDiv = document.createElement("div");
+      vpDiv.className = "viewport";
+      vpDiv.innerHTML = '<div class="hint">' + (LANG === "en" ? "drag to rotate" : "тягни — крути") + '</div>';
+      card.appendChild(vpDiv);
+      var label = document.createElement("div");
+      label.className = "label";
+      label.textContent = S().labelWord + " " + S().letters[i];
+      card.appendChild(label);
+      var why = document.createElement("div");
+      why.className = "why";
+      card.appendChild(why);
+      var btn = document.createElement("button");
+      btn.className = "pick"; btn.type = "button"; btn.textContent = S().pick;
+      card.appendChild(btn);
+      grid.appendChild(card);
+
+      var vp = makeViewport(vpDiv, {draggable:true, dist:3.6});
+      liveViewports.push(vp);
+      var variant = makeBendVariant(slot.rows, t.colCount, slot.poleAt);
+      variant.rebuild(0.001);
+      vp.group.add(variant.group);
+      vp.group.rotation.set(-0.15, 0.45, 0);
+
+      t.variants.push(variant);
+      t.viewports.push(vp);
+      btn.addEventListener("click", function(){ onPick(i, card, why); });
+    });
+  }
+
+  function onPick(i, card, whyEl){
+    if(t.picked !== null) return;
+    t.picked = i;
+    var ok = (i === t.correctIdx);
+
+    var cards = document.querySelectorAll("#cands .cand");
+    cards.forEach(function(c, idx){
+      c.querySelector("button.pick").disabled = true;
+      var kind = t.slots[idx].kind;
+      c.querySelector(".why").textContent = whyText(kind);
+      t.variants[idx].revealColor = kind==="correct" ? OK_HEX : (kind==="pole" ? BAD_HEX : WARN_HEX);
+      if(idx===t.correctIdx) c.classList.add("correct");
+      else if(idx===i) c.classList.add("wrong");
+    });
+
+    var fb = document.getElementById("feedback");
+    fb.className = "feedback show " + (ok?"ok":"bad");
+    fb.textContent = ok ? S().fbOk : (t.slots[i].kind==="sparse" ? S().fbWrongSparse : S().fbWrongPole);
+    document.getElementById("next-btn").style.display = "";
+    recordResult(ok);
+  }
+  document.getElementById("next-btn").addEventListener("click", newRound);
+
+  /* ============================================================
+     Анімаційний цикл — усі варіанти згинаються синхронно,
+     перебудова геометрії ~20 разів/с (дешево для такої кількості вершин)
+     ============================================================ */
+  var lastRebuild = 0;
+  function animTick(ts){
+    if(t.variants && t.variants.length){
+      var theta = t.thetaMax * (0.5 - 0.5*Math.cos(ts*0.0009));
+      if(!lastRebuild || ts - lastRebuild > 50){
+        lastRebuild = ts;
+        t.variants.forEach(function(v){ v.rebuild(theta); });
+      }
+    }
+    requestAnimationFrame(animTick);
+  }
+  requestAnimationFrame(animTick);
+
+  /* ============================================================
+     Мова + старт
+     ============================================================ */
+  function applyStaticStrings(){
+    var s = S();
+    applySiteBar();
+    document.documentElement.lang = LANG;
+    document.title = s.h1 + " — " + (LANG === "en" ? "3D Workshop" : "3D-Майстерня");
+    document.getElementById("txt-h1").textContent = s.h1;
+    document.getElementById("txt-club").textContent = s.club;
+    document.getElementById("txt-lbl-score").textContent = s.lblScore;
+    document.getElementById("txt-lbl-streak").textContent = s.lblStreak;
+    document.getElementById("txt-eyebrow").textContent = s.eyebrow;
+    document.getElementById("txt-title").textContent = s.title;
+    document.getElementById("txt-lede").innerHTML = s.lede;
+    document.getElementById("next-btn").textContent = s.next;
+    document.getElementById("txt-footer").textContent = s.footer;
+    document.getElementById("btn-lang-uk").classList.toggle("active", LANG==="uk");
+    document.getElementById("btn-lang-en").classList.toggle("active", LANG==="en");
+  }
+  function setLang(lang){
+    if(lang!==LANG){ LANG = lang; saveLang(); }
+    applyStaticStrings();
+    newRound();
+  }
+  document.getElementById("btn-lang-uk").addEventListener("click", function(){ setLang("uk"); });
+  document.getElementById("btn-lang-en").addEventListener("click", function(){ setLang("en"); });
+
+  function start(){ applyStaticStrings(); newRound(); }
+  if(window.claude && window.claude.hot){
+    window.claude.hot.snapshot(function(){ return {}; });
+    window.claude.hot.ready ? window.claude.hot.ready(start) : start();
+  } else {
+    start();
+  }
+})();
+</script>
+</body>
+</html>

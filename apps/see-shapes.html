@@ -1,13 +1,18 @@
-<title>Бачити Форму</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Бачити Форму — 3D-Майстерня</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
   :root{
-    --bg:#14171c; --panel:#1b1f26; --panel-2:#232833; --viewport:#0b0d11; --line:#2d333d;
-    --ink:#e9ecf2; --muted:#8a92a3; --accent:#f0a840; --accent-ink:#241705;
+    --bg:#161826; --panel:#20243a; --panel-2:#292d49; --viewport:#0d0f1c; --line:#333859;
+    --ink:#eceef8; --muted:#a4aac9; --accent:#8ade6e; --accent-ink:#0f1f09;
     --ok:#5fc98a; --bad:#e8636b;
     --box:#d2607a; --sphere:#4f9fe0; --cylinder:#4bb3a6; --cone:#c47fe0; --torus:#e0c34f; --plane:#9aa4b5;
-    --font-display:"Chakra Petch",-apple-system,"Segoe UI",sans-serif;
-    --font-body:"IBM Plex Sans",-apple-system,"Segoe UI",sans-serif;
+    --font-display:"Oswald","Arial Narrow",system-ui,sans-serif;
+    --font-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
     --font-mono:"IBM Plex Mono","SFMono-Regular",Menlo,monospace;
   }
   *{box-sizing:border-box}
@@ -35,6 +40,10 @@
   .score{font-family:var(--font-mono);font-size:.82rem;color:var(--muted);white-space:nowrap}
   .score b{color:var(--ink);font-weight:600}
   .score .streak{color:var(--accent)}
+  .langswitch{display:flex;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:3px;gap:2px}
+  .langswitch button{font-family:var(--font-mono);font-size:.72rem;font-weight:600;letter-spacing:.04em;
+    padding:7px 10px;border-radius:6px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+  .langswitch button.active{background:var(--ink);color:var(--bg)}
 
   /* ---------- generic panel ---------- */
   .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
@@ -107,21 +116,33 @@
     #mode1{grid-template-columns:1fr}
     header{flex-direction:column;align-items:flex-start}
   }
-</style>
 
+  /* ---------- link back to the site ---------- */
+  .sitebar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;max-width:1080px;margin:0 auto;padding:12px 20px 0;
+    font-family:var(--font-mono);font-size:.74rem;color:var(--muted)}
+  .sitebar a{color:var(--muted);text-decoration:none}.sitebar a:hover{color:var(--ink);text-decoration:underline}
+  .sitebar .sep{opacity:.5}
+</style>
+</head>
+<body>
+<nav class="sitebar" id="sitebar" aria-label="Site"><a class="sb-home" href="../uk/index.html">3D-Майстерня</a><span class="sep">/</span><a class="sb-list" href="../uk/exercises/index.html">Вправи</a><span class="sep">/</span><a class="sb-page" href="../uk/exercises/see-shapes.html">Про вправу</a></nav>
 <div class="wrap">
   <header>
     <div class="brand">
-      <h1>Бачити Форму</h1>
-      <span class="club">3D-Майстерня · тренажер</span>
+      <h1 id="txt-h1">Бачити Форму</h1>
+      <span class="club" id="txt-club">3D-Майстерня · тренажер</span>
     </div>
     <div class="hud">
+      <div class="langswitch">
+        <button id="btn-lang-uk">УКР</button>
+        <button id="btn-lang-en">EN</button>
+      </div>
       <div class="modeswitch">
         <button id="btn-mode1" class="active">Розклади на форми</button>
         <button id="btn-mode2">Онови обертання</button>
       </div>
       <div class="score">
-        рахунок <b id="score-txt">0/0</b> · серія <b class="streak" id="streak-txt">0</b>
+        <span id="txt-lbl-score">рахунок</span> <b id="score-txt">0/0</b> · <span id="txt-lbl-streak">серія</span> <b class="streak" id="streak-txt">0</b>
       </div>
     </div>
   </header>
@@ -129,21 +150,21 @@
   <!-- ======================= MODE 1 ======================= -->
   <section id="mode1">
     <div class="panel">
-      <div class="eyebrow">Об’єкт</div>
+      <div class="eyebrow" id="txt-m1-eyebrow">Об’єкт</div>
       <div class="viewport" id="vp-m1">
         <div class="axislegend">
           <span><i style="background:#e0524f"></i>X</span>
           <span><i style="background:#4fb35a"></i>Y</span>
           <span><i style="background:#4d94e0"></i>Z</span>
         </div>
-        <div class="hint">тягни мишею — крути</div>
+        <div class="hint" id="txt-m1-hint">тягни мишею — крути</div>
       </div>
     </div>
 
     <div class="panel">
-      <div class="eyebrow">Завдання</div>
+      <div class="eyebrow" id="txt-m1-task-eyebrow">Завдання</div>
       <h2 id="m1-title">З яких базових форм це складено?</h2>
-      <p class="lede">Обери всі типи форм, які бачиш в об’єкті ліворуч. Не має значення скільки разів форма повторюється — важливо, які <b>типи</b> присутні.</p>
+      <p class="lede" id="txt-m1-lede">Обери всі типи форм, які бачиш в об’єкті ліворуч. Не має значення скільки разів форма повторюється — важливо, які <b>типи</b> присутні.</p>
       <div class="chips" id="m1-chips"></div>
       <div class="rowbtns">
         <button class="primary" id="m1-check">Перевірити</button>
@@ -157,9 +178,9 @@
   <!-- ======================= MODE 2 ======================= -->
   <section id="mode2" style="display:none">
     <div class="panel">
-      <div class="eyebrow">Ціль</div>
-      <h2>Яка з трьох фігур — це та сама ціль, просто повернена?</h2>
-      <p class="lede">Крути мишею <b>і ціль, і всі варіанти</b> — шукай той, що при обертанні збігається з ціллю кубик-в-кубик (кольори кубиків підказують, який де). Один варіант — це справді ціль, просто повернена. Другий — її <b>дзеркальне відображення</b>: як не крути, кольори ляжуть у дзеркальному порядку, а не так само. Третій — узагалі інша фігура.</p>
+      <div class="eyebrow" id="txt-m2-eyebrow">Ціль</div>
+      <h2 id="txt-m2-title">Яка з трьох фігур — це та сама ціль, просто повернена?</h2>
+      <p class="lede" id="txt-m2-lede">Крути мишею <b>і ціль, і всі варіанти</b> — шукай той, що при обертанні збігається з ціллю кубик-в-кубик (кольори кубиків підказують, який де). Один варіант — це справді ціль, просто повернена. Другий — її <b>дзеркальне відображення</b>: як не крути, кольори ляжуть у дзеркальному порядку, а не так само. Третій — узагалі інша фігура.</p>
       <div class="target-row">
         <div class="target-box">
           <div class="viewport" id="vp-target"><div class="hint">тягни — крути</div></div>
@@ -173,7 +194,7 @@
     </div>
   </section>
 
-  <footer>Гурток «3D-Майстерня» · тренажер для домашньої практики між заняттями</footer>
+  <footer id="txt-footer">Гурток «3D-Майстерня» · тренажер для домашньої практики між заняттями</footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -185,14 +206,121 @@
      Категоріальні кольори примітивів (легенда стабільна завжди)
      ============================================================ */
   var PRIM = {
-    box:      { label:"Куб",      color:0xd2607a },
-    sphere:   { label:"Куля",     color:0x4f9fe0 },
-    cylinder: { label:"Циліндр",  color:0x4bb3a6 },
-    cone:     { label:"Конус",    color:0xc47fe0 },
-    torus:    { label:"Тор (бублик)", color:0xe0c34f },
-    plane:    { label:"Площина",  color:0x9aa4b5 }
+    box:      { label:{uk:"Куб",      en:"Box"},      color:0xd2607a },
+    sphere:   { label:{uk:"Куля",     en:"Sphere"},   color:0x4f9fe0 },
+    cylinder: { label:{uk:"Циліндр",  en:"Cylinder"}, color:0x4bb3a6 },
+    cone:     { label:{uk:"Конус",    en:"Cone"},     color:0xc47fe0 },
+    torus:    { label:{uk:"Тор (бублик)", en:"Torus (donut)"}, color:0xe0c34f },
+    plane:    { label:{uk:"Площина",  en:"Plane"},    color:0x9aa4b5 }
   };
   var NEUTRAL = 0xc7cedb;
+
+  /* ============================================================
+     Двомовність (UK/EN) — LANG зберігається в localStorage,
+     детектиться з мови браузера при першому візиті
+     ============================================================ */
+  var LANG_KEY = "bachyty-formu-lang";
+  function detectLang(){
+    try{
+      var n = ((navigator.language || navigator.userLanguage || "") + "").toLowerCase();
+      if(n.indexOf("en") === 0) return "en";
+    }catch(e){}
+    return "uk";
+  }
+  var LANG = (function(){
+    try{ var q = new URLSearchParams(location.search).get("lang"); if(q==="uk"||q==="en") return q; }catch(e){}
+    try{ var shared = localStorage.getItem("3dm-lang"); if(shared==="uk"||shared==="en") return shared; }catch(e){}
+    try{ var saved = localStorage.getItem(LANG_KEY); if(saved==="uk"||saved==="en") return saved; }catch(e){}
+    return detectLang();
+  })();
+  function saveLang(){
+    try{ localStorage.setItem(LANG_KEY, LANG); localStorage.setItem("3dm-lang", LANG); }catch(e){}
+    try{ var u = new URL(location.href); u.searchParams.set("lang", LANG); history.replaceState(null, "", u); }catch(e){}
+  }
+
+  /* ---------- link back to the site (follows the current language) ---------- */
+  var SITEBAR = {
+    uk: {home:"3D-Майстерня", list:"Вправи", page:"Про вправу"},
+    en: {home:"3D Workshop",  list:"Exercises", page:"About this exercise"}
+  };
+  function applySiteBar(){
+    var t = SITEBAR[LANG], sb = document.getElementById("sitebar");
+    if(!sb || !t) return;
+    var a = sb.querySelector(".sb-home"), b = sb.querySelector(".sb-list"), c = sb.querySelector(".sb-page");
+    a.textContent = t.home; a.href = "../" + LANG + "/index.html";
+    b.textContent = t.list; b.href = "../" + LANG + "/exercises/index.html";
+    c.textContent = t.page; c.href = "../" + LANG + "/exercises/see-shapes.html";
+  }
+
+  var STR = {
+    uk: {
+      h1: "Бачити Форму",
+      club: "3D-Майстерня · тренажер",
+      modeBtn1: "Розклади на форми",
+      modeBtn2: "Онови обертання",
+      lblScore: "рахунок",
+      lblStreak: "серія",
+      m1Eyebrow: "Об’єкт",
+      m1Hint: "тягни мишею — крути",
+      m1TaskEyebrow: "Завдання",
+      m1Title: "З яких базових форм це складено?",
+      m1Lede: "Обери всі типи форм, які бачиш в об’єкті ліворуч. Не має значення скільки разів форма повторюється — важливо, які <b>типи</b> присутні.",
+      m1Check: "Перевірити",
+      m1Next: "Наступний об’єкт →",
+      m1Correct: function(name, list){ return "Точно! «"+name+"» = "+list+"."; },
+      m1Wrong:   function(name, list){ return "Не зовсім. «"+name+"» = "+list+"."; },
+      m2Eyebrow: "Ціль",
+      m2Title: "Яка з трьох фігур — це та сама ціль, просто повернена?",
+      m2Lede: "Крути мишею <b>і ціль, і всі варіанти</b> — шукай той, що при обертанні збігається з ціллю кубик-в-кубик (кольори кубиків підказують, який де). Один варіант — це справді ціль, просто повернена. Другий — її <b>дзеркальне відображення</b>: як не крути, кольори ляжуть у дзеркальному порядку, а не так само. Третій — узагалі інша фігура.",
+      m2HintTarget: "тягни — крути",
+      m2HintCand: "тягни",
+      m2OptionLetters: "АБВ",
+      m2OptionWord: "Варіант",
+      m2Choose: "Обрати",
+      m2Next: "Наступна фігура →",
+      m2Ok: "Так! Покрути обидві ще трохи — переконайся, що кожен кольоровий кубик стає на своє місце.",
+      m2WrongMirror: "Ні — це дзеркальне відображення. Кольори кубиків ляжуть у протилежному порядку, хоч би як крутити.",
+      m2WrongOther: "Ні — це геть інша фігура (звідси й інший набір кубиків/кольорів).",
+      kindCorrect: "Це ціль, просто повернена",
+      kindMirror: "Це дзеркальне відображення цілі",
+      kindOther: "Це зовсім інша фігура",
+      footer: "Гурток «3D-Майстерня» · тренажер для домашньої практики між заняттями"
+    },
+    en: {
+      h1: "See The Shape",
+      club: "3D Workshop · trainer",
+      modeBtn1: "Break Into Shapes",
+      modeBtn2: "Spot The Rotation",
+      lblScore: "score",
+      lblStreak: "streak",
+      m1Eyebrow: "Object",
+      m1Hint: "drag with mouse — rotate",
+      m1TaskEyebrow: "Task",
+      m1Title: "What basic shapes is this made of?",
+      m1Lede: "Pick every shape type you can see in the object on the left. It doesn't matter how many times a shape repeats — what matters is which <b>types</b> are present.",
+      m1Check: "Check",
+      m1Next: "Next object →",
+      m1Correct: function(name, list){ return "Exactly! \""+name+"\" = "+list+"."; },
+      m1Wrong:   function(name, list){ return "Not quite. \""+name+"\" = "+list+"."; },
+      m2Eyebrow: "Target",
+      m2Title: "Which of the three shapes is the target, just rotated?",
+      m2Lede: "Drag with the mouse to rotate <b>both the target and every option</b> — look for the one that lines up with the target cube-by-cube (the cube colors tell you which is which). One option really is the target, just turned around. Another is its <b>mirror image</b>: however you rotate it, the colors will line up backwards, never the same way. The third is a completely different shape.",
+      m2HintTarget: "drag — rotate",
+      m2HintCand: "drag",
+      m2OptionLetters: "ABC",
+      m2OptionWord: "Option",
+      m2Choose: "Choose",
+      m2Next: "Next shape →",
+      m2Ok: "Yes! Rotate both a bit more — check that every colored cube lands in the same spot.",
+      m2WrongMirror: "No — this is a mirror image. The colored cubes will always line up backwards, no matter how you rotate it.",
+      m2WrongOther: "No — this is a completely different shape (that's why the cubes/colors don't match).",
+      kindCorrect: "This is the target, just rotated",
+      kindMirror: "This is a mirror image of the target",
+      kindOther: "This is a completely different shape",
+      footer: "3D Workshop club · practice trainer for between sessions"
+    }
+  };
+  function S(){ return STR[LANG]; }
 
   function svgIcon(type){
     switch(type){
@@ -209,42 +337,42 @@
      Рецепти складених об’єктів (режим 1)
      ============================================================ */
   var OBJECTS = [
-    { name:"Кухоль", types:["cylinder","torus"], parts:[
+    { name:{uk:"Кухоль", en:"Mug"}, types:["cylinder","torus"], parts:[
       {type:"cylinder", pos:[0,0,0], size:[0.6,0.6,1.1,24]},
       {type:"torus", pos:[0.62,0,0], size:[0.32,0.09], rot:[0,Math.PI/2,0]}
     ]},
-    { name:"Настільна лампа", types:["cylinder","cone"], parts:[
+    { name:{uk:"Настільна лампа", en:"Desk Lamp"}, types:["cylinder","cone"], parts:[
       {type:"cylinder", pos:[0,-0.9,0], size:[0.5,0.5,0.12,24]},
       {type:"cylinder", pos:[0,-0.4,0], size:[0.05,0.05,0.9,12]},
       {type:"cone", pos:[0,0.25,0], size:[0.45,0.55,24], rot:[Math.PI,0,0]}
     ]},
-    { name:"Ракета", types:["cylinder","cone","sphere"], parts:[
+    { name:{uk:"Ракета", en:"Rocket"}, types:["cylinder","cone","sphere"], parts:[
       {type:"cylinder", pos:[0,-0.1,0], size:[0.32,0.32,1.3,20]},
       {type:"cone", pos:[0,0.85,0], size:[0.32,0.7,20]},
       {type:"sphere", pos:[0,0.1,0.33], size:[0.14,16,12]}
     ]},
-    { name:"Робот", types:["box","sphere","cylinder"], parts:[
+    { name:{uk:"Робот", en:"Robot"}, types:["box","sphere","cylinder"], parts:[
       {type:"box", pos:[0,0,0], size:[0.8,0.9,0.5]},
       {type:"sphere", pos:[0,0.75,0], size:[0.38,20,16]},
       {type:"cylinder", pos:[-0.55,0.15,0], size:[0.14,0.14,0.8,12], rot:[0,0,0.35]},
       {type:"cylinder", pos:[0.55,0.15,0], size:[0.14,0.14,0.8,12], rot:[0,0,-0.35]}
     ]},
-    { name:"Гриб", types:["cylinder","sphere"], parts:[
+    { name:{uk:"Гриб", en:"Mushroom"}, types:["cylinder","sphere"], parts:[
       {type:"cylinder", pos:[0,-0.4,0], size:[0.22,0.28,0.9,16]},
       {type:"sphere", pos:[0,0.18,0], size:[0.62,20,14], scaleY:0.55}
     ]},
-    { name:"Гантеля", types:["cylinder","sphere"], parts:[
+    { name:{uk:"Гантеля", en:"Dumbbell"}, types:["cylinder","sphere"], parts:[
       {type:"cylinder", pos:[0,0,0], size:[0.09,0.09,1.3,12], rot:[0,0,Math.PI/2]},
       {type:"sphere", pos:[-0.75,0,0], size:[0.34,18,14]},
       {type:"sphere", pos:[0.75,0,0], size:[0.34,18,14]}
     ]},
-    { name:"Вежа", types:["cylinder","cone","box"], parts:[
+    { name:{uk:"Вежа", en:"Tower"}, types:["cylinder","cone","box"], parts:[
       {type:"cylinder", pos:[0,-0.2,0], size:[0.42,0.5,1.4,20]},
       {type:"cone", pos:[0,0.85,0], size:[0.5,0.7,20]},
       {type:"box", pos:[0,0.05,0.42], size:[0.16,0.22,0.08]},
       {type:"box", pos:[0.3,-0.1,0.36], size:[0.14,0.18,0.08]}
     ]},
-    { name:"Машина", types:["box","cylinder"], parts:[
+    { name:{uk:"Машина", en:"Car"}, types:["box","cylinder"], parts:[
       {type:"box", pos:[0,-0.15,0], size:[1.6,0.4,0.7]},
       {type:"box", pos:[-0.1,0.25,0], size:[0.8,0.4,0.6]},
       {type:"cylinder", pos:[-0.55,-0.45,0.4], size:[0.22,0.22,0.14,16], rot:[Math.PI/2,0,0]},
@@ -252,58 +380,58 @@
       {type:"cylinder", pos:[-0.55,-0.45,-0.4], size:[0.22,0.22,0.14,16], rot:[Math.PI/2,0,0]},
       {type:"cylinder", pos:[0.55,-0.45,-0.4], size:[0.22,0.22,0.14,16], rot:[Math.PI/2,0,0]}
     ]},
-    { name:"Кільце на підставці", types:["torus","cylinder","box"], parts:[
+    { name:{uk:"Кільце на підставці", en:"Ring on a Stand"}, types:["torus","cylinder","box"], parts:[
       {type:"box", pos:[0,-0.85,0], size:[0.7,0.14,0.7]},
       {type:"cylinder", pos:[0,-0.45,0], size:[0.08,0.08,0.7,12]},
       {type:"torus", pos:[0,0.15,0], size:[0.45,0.13]}
     ]},
-    { name:"Шахова пішка", types:["sphere","cone","cylinder"], parts:[
+    { name:{uk:"Шахова пішка", en:"Chess Pawn"}, types:["sphere","cone","cylinder"], parts:[
       {type:"cylinder", pos:[0,-0.85,0], size:[0.42,0.5,0.2,20]},
       {type:"cone", pos:[0,-0.15,0], size:[0.3,1.0,20]},
       {type:"sphere", pos:[0,0.55,0], size:[0.24,16,12]}
     ]},
-    { name:"Свічка", types:["cylinder","cone"], parts:[
+    { name:{uk:"Свічка", en:"Candle"}, types:["cylinder","cone"], parts:[
       {type:"cylinder", pos:[0,-0.2,0], size:[0.28,0.28,1.2,20]},
       {type:"cone", pos:[0,0.55,0], size:[0.12,0.35,12]}
     ]},
-    { name:"Стіл", types:["plane","cylinder"], parts:[
+    { name:{uk:"Стіл", en:"Table"}, types:["plane","cylinder"], parts:[
       {type:"plane", pos:[0,0.35,0], size:[1.4,1.0], rot:[-Math.PI/2,0,0]},
       {type:"cylinder", pos:[-0.55,-0.15,0.35], size:[0.05,0.05,0.9,10]},
       {type:"cylinder", pos:[0.55,-0.15,0.35], size:[0.05,0.05,0.9,10]},
       {type:"cylinder", pos:[-0.55,-0.15,-0.35], size:[0.05,0.05,0.9,10]},
       {type:"cylinder", pos:[0.55,-0.15,-0.35], size:[0.05,0.05,0.9,10]}
     ]},
-    { name:"Пончик на тарілці", types:["torus","plane"], parts:[
+    { name:{uk:"Пончик на тарілці", en:"Donut on a Plate"}, types:["torus","plane"], parts:[
       {type:"plane", pos:[0,-0.3,0], size:[1.1,1.1], rot:[-Math.PI/2,0,0]},
       {type:"torus", pos:[0,-0.05,0], size:[0.4,0.14], rot:[Math.PI/2,0,0]}
     ]},
-    { name:"Сатурн", types:["sphere","torus"], parts:[
+    { name:{uk:"Сатурн", en:"Saturn"}, types:["sphere","torus"], parts:[
       {type:"sphere", pos:[0,0,0], size:[0.55,20,16]},
       {type:"torus", pos:[0,0,0], size:[0.95,0.06], rot:[1.3,0.3,0]}
     ]},
-    { name:"Кубок", types:["cylinder","cone","sphere"], parts:[
+    { name:{uk:"Кубок", en:"Trophy"}, types:["cylinder","cone","sphere"], parts:[
       {type:"cylinder", pos:[0,-0.85,0], size:[0.35,0.42,0.18,20]},
       {type:"cylinder", pos:[0,-0.55,0], size:[0.07,0.07,0.5,12]},
       {type:"cone", pos:[0,0.05,0], size:[0.4,0.6,20], rot:[Math.PI,0,0]},
       {type:"sphere", pos:[0,0.5,0], size:[0.15,14,10]}
     ]},
-    { name:"Сніговик", types:["sphere"], parts:[
+    { name:{uk:"Сніговик", en:"Snowman"}, types:["sphere"], parts:[
       {type:"sphere", pos:[0,-0.55,0], size:[0.5,18,14]},
       {type:"sphere", pos:[0,0.05,0], size:[0.36,18,14]},
       {type:"sphere", pos:[0,0.55,0], size:[0.24,16,12]}
     ]},
-    { name:"Коробка з кубиків", types:["box"], parts:[
+    { name:{uk:"Коробка з кубиків", en:"Stack of Blocks"}, types:["box"], parts:[
       {type:"box", pos:[0,-0.55,0], size:[0.9,0.5,0.9]},
       {type:"box", pos:[0.05,0.0,0.05], size:[0.6,0.45,0.6]},
       {type:"box", pos:[-0.05,0.5,-0.05], size:[0.4,0.4,0.4]}
     ]},
-    { name:"Пісочний годинник", types:["cone","cylinder"], parts:[
+    { name:{uk:"Пісочний годинник", en:"Hourglass"}, types:["cone","cylinder"], parts:[
       {type:"cone", pos:[0,0.35,0], size:[0.42,0.7,20], rot:[Math.PI,0,0]},
       {type:"cone", pos:[0,-0.35,0], size:[0.42,0.7,20]},
       {type:"cylinder", pos:[0,0.72,0], size:[0.46,0.46,0.1,20]},
       {type:"cylinder", pos:[0,-0.72,0], size:[0.46,0.46,0.1,20]}
     ]},
-    { name:"Стілець", types:["box","cylinder"], parts:[
+    { name:{uk:"Стілець", en:"Chair"}, types:["box","cylinder"], parts:[
       {type:"box", pos:[0,-0.05,0], size:[0.9,0.14,0.9]},
       {type:"box", pos:[0,0.45,-0.4], size:[0.9,0.9,0.12]},
       {type:"cylinder", pos:[0.35,-0.55,0.35], size:[0.05,0.05,0.9,10]},
@@ -311,7 +439,7 @@
       {type:"cylinder", pos:[0.35,-0.55,-0.35], size:[0.05,0.05,0.9,10]},
       {type:"cylinder", pos:[-0.35,-0.55,-0.35], size:[0.05,0.05,0.9,10]}
     ]},
-    { name:"Тотемний стовп", types:["torus","cylinder"], parts:[
+    { name:{uk:"Тотемний стовп", en:"Totem Pole"}, types:["torus","cylinder"], parts:[
       {type:"cylinder", pos:[0,0,0], size:[0.06,0.06,1.8,10]},
       {type:"torus", pos:[0,-0.55,0], size:[0.32,0.09], rot:[Math.PI/2,0,0]},
       {type:"torus", pos:[0,0,0], size:[0.32,0.09], rot:[Math.PI/2,0,0]},
@@ -419,7 +547,10 @@
     var w = container.clientWidth || 300, h = container.clientHeight || 300;
     var renderer = new THREE.WebGLRenderer({antialias:true, alpha:false});
     renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
-    renderer.setSize(w, h);
+    // updateStyle=false: у сітці карток режиму 2 (auto-fit grid) контейнер під час
+    // побудови ще не має фінальної ширини — інлайновий px-розмір від setSize()
+    // перекрив би CSS width:100% і виривав би канвас за межі картки.
+    renderer.setSize(w, h, false);
     renderer.setClearColor(0x0b0d11, 1);
     // прибрати лише canvas попереднього рендерера (якщо є), а не весь вміст —
     // інакше статичні підказки/легенда (hint/axislegend), вставлені в розмітку
@@ -483,7 +614,7 @@
       if(!vp.alive) return;
       var w2 = container.clientWidth, h2 = container.clientHeight;
       if(!w2||!h2) return;
-      renderer.setSize(w2,h2);
+      renderer.setSize(w2,h2,false);
       camera.aspect = w2/h2;
       camera.updateProjectionMatrix();
     };
@@ -535,7 +666,7 @@
       var chip = document.createElement("div");
       chip.className = "chip";
       chip.style.setProperty("--chip-c", "#"+PRIM[t].color.toString(16).padStart(6,"0"));
-      chip.innerHTML = svgIcon(t) + "<span>"+PRIM[t].label+"</span>";
+      chip.innerHTML = svgIcon(t) + "<span>"+PRIM[t].label[LANG]+"</span>";
       chip.addEventListener("click", function(){
         if(m1.checked) return;
         m1.selected[t] = !m1.selected[t];
@@ -548,7 +679,7 @@
   function m1NewRound(){
     m1.checked = false;
     m1.recipe = pick(OBJECTS);
-    document.getElementById("m1-title").textContent = "З яких базових форм це складено?";
+    document.getElementById("m1-title").textContent = S().m1Title;
     document.getElementById("m1-feedback").className = "feedback";
     document.getElementById("m1-legend").style.display = "none";
     document.getElementById("m1-check").style.display = "";
@@ -574,14 +705,11 @@
     var extra = chosen.filter(function(t){ return correctSet.indexOf(t)===-1; });
     var ok = missing.length===0 && extra.length===0;
 
+    var name = m1.recipe.name[LANG];
+    var list = correctSet.map(function(t){return PRIM[t].label[LANG].toLowerCase();}).join(" + ");
     var fb = document.getElementById("m1-feedback");
     fb.className = "feedback show " + (ok?"ok":"bad");
-    if(ok){
-      fb.textContent = "Точно! «"+m1.recipe.name+"» = "+correctSet.map(function(t){return PRIM[t].label.toLowerCase();}).join(" + ")+".";
-    } else {
-      var msg = "Не зовсім. «"+m1.recipe.name+"» = "+correctSet.map(function(t){return PRIM[t].label.toLowerCase();}).join(" + ")+".";
-      fb.textContent = msg;
-    }
+    fb.textContent = ok ? S().m1Correct(name, list) : S().m1Wrong(name, list);
 
     // розфарбувати об'єкт за типами — і показати легенду
     m1.viewport.group.traverse(function(o){
@@ -591,7 +719,7 @@
     });
     var legend = document.getElementById("m1-legend");
     legend.innerHTML = correctSet.map(function(t){
-      return '<span><i style="background:#'+PRIM[t].color.toString(16).padStart(6,"0")+'"></i>'+PRIM[t].label+'</span>';
+      return '<span><i style="background:#'+PRIM[t].color.toString(16).padStart(6,"0")+'"></i>'+PRIM[t].label[LANG]+'</span>';
     }).join("");
     legend.style.display = "flex";
 
@@ -607,11 +735,11 @@
      РЕЖИМ 2 — знайди справжній поворот (не дзеркало)
      ============================================================ */
   var m2 = { shape:null, correctIdx:0, cands:[], picked:null };
-  var KIND_LABEL = {
-    correct: "Це ціль, просто повернена",
-    mirror:  "Це дзеркальне відображення цілі",
-    other:   "Це зовсім інша фігура"
-  };
+  function kindLabel(kind){
+    if(kind==="correct") return S().kindCorrect;
+    if(kind==="mirror") return S().kindMirror;
+    return S().kindOther;
+  }
 
   function m2NewRound(){
     document.getElementById("m2-feedback").className = "feedback";
@@ -634,7 +762,7 @@
     // ціль
     var tCont = document.getElementById("vp-target");
     if(m2.targetVp) m2.targetVp.dispose();
-    tCont.innerHTML = '<div class="hint">тягни — крути</div>';
+    tCont.innerHTML = '<div class="hint">'+S().m2HintTarget+'</div>';
     m2.targetVp = makeViewport(tCont, {draggable:true, dist:5.6});
     liveViewports.push(m2.targetVp);
     m2.targetVp.group.add(buildPoly(m2.shape, baseColors));
@@ -651,11 +779,11 @@
       card.className = "cand";
       var vpDiv = document.createElement("div");
       vpDiv.className = "viewport";
-      vpDiv.innerHTML = '<div class="hint">тягни</div>';
+      vpDiv.innerHTML = '<div class="hint">'+S().m2HintCand+'</div>';
       card.appendChild(vpDiv);
       var label = document.createElement("div");
       label.className = "label";
-      label.textContent = "Варіант " + "АБВ"[i];
+      label.textContent = S().m2OptionWord + " " + S().m2OptionLetters[i];
       card.appendChild(label);
       var why = document.createElement("div");
       why.className = "why";
@@ -663,7 +791,7 @@
       var btn = document.createElement("button");
       btn.className = "pick";
       btn.type = "button";
-      btn.textContent = "Обрати";
+      btn.textContent = S().m2Choose;
       card.appendChild(btn);
       grid.appendChild(card);
 
@@ -686,7 +814,7 @@
     cards.forEach(function(c, idx){
       c.querySelector("button.pick").disabled = true;
       var kind = m2.slots[idx].kind;
-      c.querySelector(".why").textContent = KIND_LABEL[kind];
+      c.querySelector(".why").textContent = kindLabel(kind);
       if(idx===m2.correctIdx) c.classList.add("correct");
       else if(idx===i) c.classList.add("wrong");
     });
@@ -694,15 +822,56 @@
     var fb = document.getElementById("m2-feedback");
     fb.className = "feedback show " + (ok?"ok":"bad");
     fb.textContent = ok
-      ? "Так! Покрути обидві ще трохи — переконайся, що кожен кольоровий кубик стає на своє місце."
-      : (m2.slots[i].kind==="mirror"
-          ? "Ні — це дзеркальне відображення. Кольори кубиків ляжуть у протилежному порядку, хоч би як крутити."
-          : "Ні — це геть інша фігура (звідси й інший набір кубиків/кольорів).");
+      ? S().m2Ok
+      : (m2.slots[i].kind==="mirror" ? S().m2WrongMirror : S().m2WrongOther);
     document.getElementById("m2-next").style.display = "";
     recordResult(ok);
   }
 
   document.getElementById("m2-next").addEventListener("click", m2NewRound);
+
+  /* ============================================================
+     Застосувати мову до статичних (не раундових) підписів
+     ============================================================ */
+  function applyStaticStrings(){
+    var s = S();
+    applySiteBar();
+    document.documentElement.lang = LANG;
+    document.title = s.h1 + " — " + s.club;
+    document.getElementById("txt-h1").textContent = s.h1;
+    document.getElementById("txt-club").textContent = s.club;
+    document.getElementById("btn-mode1").textContent = s.modeBtn1;
+    document.getElementById("btn-mode2").textContent = s.modeBtn2;
+    document.getElementById("txt-lbl-score").textContent = s.lblScore;
+    document.getElementById("txt-lbl-streak").textContent = s.lblStreak;
+    document.getElementById("txt-m1-eyebrow").textContent = s.m1Eyebrow;
+    document.getElementById("txt-m1-hint").textContent = s.m1Hint;
+    document.getElementById("txt-m1-task-eyebrow").textContent = s.m1TaskEyebrow;
+    document.getElementById("txt-m1-lede").innerHTML = s.m1Lede;
+    document.getElementById("m1-check").textContent = s.m1Check;
+    document.getElementById("m1-next").textContent = s.m1Next;
+    document.getElementById("txt-m2-eyebrow").textContent = s.m2Eyebrow;
+    document.getElementById("txt-m2-title").textContent = s.m2Title;
+    document.getElementById("txt-m2-lede").innerHTML = s.m2Lede;
+    document.getElementById("m2-next").textContent = s.m2Next;
+    document.getElementById("txt-footer").textContent = s.footer;
+    document.getElementById("btn-lang-uk").classList.toggle("active", LANG==="uk");
+    document.getElementById("btn-lang-en").classList.toggle("active", LANG==="en");
+  }
+
+  function setLang(lang){
+    if(lang!==LANG){
+      LANG = lang;
+      saveLang();
+    }
+    applyStaticStrings();
+    // перегенерувати поточний раунд мовою, що обрана — простіше й надійніше,
+    // ніж підміняти текст у вже відповіданому раунді на льоту
+    m1NewRound();
+    if(m2.shape){ m2NewRound(); }
+  }
+  document.getElementById("btn-lang-uk").addEventListener("click", function(){ setLang("uk"); });
+  document.getElementById("btn-lang-en").addEventListener("click", function(){ setLang("en"); });
 
   /* ============================================================
      Перемикання режимів
@@ -723,6 +892,7 @@
      Старт (+ підхоплення гарячого перезавантаження артефакту)
      ============================================================ */
   function start(data){
+    applyStaticStrings();
     m1NewRound();
     if(data && data.mode===2){ setMode(2); m2NewRound(); }
   }
@@ -736,3 +906,5 @@
   }
 })();
 </script>
+</body>
+</html>

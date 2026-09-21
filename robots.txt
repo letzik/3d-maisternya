@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://letzik.github.io/3d-maisternya/sitemap.xml
