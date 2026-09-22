@@ -15,11 +15,14 @@
   store("3dm-lang", lang);
 
   /* theme */
+  var THEME_COLORS = { dark: "#161826", light: "#f5f6fb" };
   var themeBtn = d.querySelector("[data-theme-toggle]");
   if (themeBtn) themeBtn.addEventListener("click", function () {
     var next = d.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
     d.documentElement.setAttribute("data-theme", next);
     store("3dm-theme", next);
+    var meta = d.getElementById("theme-color-meta");
+    if (meta) meta.setAttribute("content", THEME_COLORS[next]);
   });
 
   /* mobile menu + blocks dropdown */

@@ -536,9 +536,13 @@ def search_dialog(lang):
             f'<p class="search__hint" data-none="{esc(u["search_none"])}" data-default="{esc(u["search_hint"])}">{esc(u["search_hint"])}</p></div></div>')
 
 
+THEME_COLORS = {"dark": "#161826", "light": "#f5f6fb"}
+
 THEME_INIT = ("<script>(function(){try{var t=localStorage.getItem('3dm-theme');"
               "if(!t){t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'}"
-              "document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})()</script>")
+              "document.documentElement.setAttribute('data-theme',t);"
+              "var m=document.getElementById('theme-color-meta');if(m)m.setAttribute('content',t==='light'?'" + THEME_COLORS["light"] + "':'" + THEME_COLORS["dark"] + "');"
+              "}catch(e){document.documentElement.setAttribute('data-theme','dark')}})()</script>")
 
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700'
@@ -612,8 +616,11 @@ def page_shell(lang, path, title, description, main, *, sidebar="", toc="", crum
         f'<title>{esc(full_title)}</title><meta name="description" content="{esc(description)}">'
         f'<meta property="og:title" content="{esc(full_title)}"><meta property="og:description" content="{esc(description)}">'
         f'<meta property="og:type" content="website"><meta property="og:url" content="{SITE_URL}{path}">'
-        f'<meta name="theme-color" content="#161826">{hl}'
+        f'<meta name="theme-color" id="theme-color-meta" content="#161826">{hl}'
         f'<link rel="icon" href="{root}assets/img/favicon.svg" type="image/svg+xml">'
+        f'<link rel="apple-touch-icon" href="{root}assets/img/apple-touch-icon.png">'
+        f'<meta name="apple-mobile-web-app-title" content="{esc(u["site_name"])}">'
+        f'<meta name="mobile-web-app-capable" content="yes">'
         f'{THEME_INIT}{FONTS}<link rel="stylesheet" href="{root}assets/css/site.css"></head>')
     body = (
         f'<body class="{body_class}" data-root="{root}" data-lang="{lang}" data-path="{path}">'
@@ -894,9 +901,10 @@ def build_root():
     write("index.html",
           f'<!doctype html><html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
           f'<title>{esc(UI["uk"]["site_name"])} · {esc(UI["en"]["site_name"])}</title>'
-          f'<meta name="description" content="{esc(HOME["uk"]["lede"])}"><meta name="theme-color" content="#161826">'
+          f'<meta name="description" content="{esc(HOME["uk"]["lede"])}"><meta name="theme-color" id="theme-color-meta" content="#161826">'
           f'<link rel="alternate" hreflang="uk" href="{SITE_URL}uk/"><link rel="alternate" hreflang="en" href="{SITE_URL}en/">'
           f'<link rel="alternate" hreflang="x-default" href="{SITE_URL}"><link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">'
+          f'<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">'
           f'{THEME_INIT}{FONTS}<link rel="stylesheet" href="assets/css/site.css">'
           f'<noscript><style>.gate__wait{{display:none}}</style></noscript>'
           f'<script>(function(){{try{{var s=localStorage.getItem("3dm-lang");var l=(navigator.languages&&navigator.languages[0])||navigator.language||"uk";'
