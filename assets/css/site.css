@@ -208,6 +208,15 @@ tbody tr:hover td { background: color-mix(in srgb, var(--panel2) 55%, transparen
 .ta-mir-r { transform-box: fill-box; transform-origin: 0% 50%; animation: ta-mirror 2.6s ease-in-out infinite; }
 .ta-mir-l { transform-box: fill-box; transform-origin: 100% 50%; animation: ta-mirror 2.6s ease-in-out infinite; }
 
+/* ---------- tool animations (Block 2: Knife, Subdivision, Boolean, Merge) ---------- */
+/* Subdivision reuses ta-bevel-a/b (sharp shape cross-fades into a round one); Boolean reuses ta-inset (cutter) + ta-bevel-b (hole reveal). */
+@keyframes ta-knife-cut { 0%, 10% { stroke-dashoffset: 90; opacity: .35; } 50%, 82% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 90; opacity: .35; } }
+.ta-knife-line { stroke-dasharray: 90; animation: ta-knife-cut 2.6s ease-in-out infinite; }
+
+@keyframes ta-merge-move { 0%, 10% { transform: translateX(var(--mx)); opacity: .4; } 50%, 82% { transform: translateX(0); opacity: 1; } 100% { transform: translateX(var(--mx)); opacity: .4; } }
+.ta-merge-l { --mx: 16px; transform-box: fill-box; transform-origin: center; animation: ta-merge-move 2.6s ease-in-out infinite; }
+.ta-merge-r { --mx: -16px; transform-box: fill-box; transform-origin: center; animation: ta-merge-move 2.6s ease-in-out infinite; }
+
 .fig { margin: 1.5em 0; }
 .fig img { width: 100%; display: block; border-radius: var(--r); border: 1px solid var(--line); background: var(--panel); }
 .fig figcaption { margin-top: .6em; font: 400 .85rem var(--f-mono); color: var(--muted); text-align: center; }
