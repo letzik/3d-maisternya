@@ -8,7 +8,7 @@ blocks:
     icon: interface
     sessions: "1"
     range: "1"
-    exercises: []
+    exercises: [where-am-i]
     title:
       uk: "Інтерфейс Blender"
       en: "The Blender interface"

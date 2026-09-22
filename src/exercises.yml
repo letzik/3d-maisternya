@@ -3,6 +3,21 @@
 # kind: trainer | template
 
 exercises:
+  - slug: where-am-i
+    kind: trainer
+    icon: interface
+    app: apps/where-am-i.html
+    blocks: [0]
+    title:
+      uk: "Де Я Зараз?"
+      en: "Where Am I?"
+    tagline:
+      uk: "Стан екрана плюс натиснута клавіша — що станеться? Тренуй Object Mode проти Edit Mode, перш ніж це стане джерелом плутанини."
+      en: "Screen state plus a key you press — what happens? Train telling Object Mode from Edit Mode before it becomes a source of confusion."
+    topic:
+      uk: "Інтерфейс і режими"
+      en: "Interface and modes"
+
   - slug: see-shapes
     kind: trainer
     icon: cube

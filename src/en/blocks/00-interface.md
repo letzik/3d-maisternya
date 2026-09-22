@@ -122,6 +122,8 @@ That's exactly what Mirror turns out to be in [[block:1]]: you add it through Ad
 Open Blender with a clean scene. Orbit, pan and zoom the viewport with the mouse, switch to a strict front and top view through the gizmo or the numpad, enter Edit Mode on the cube and select everything in turn by vertex, edge and face mode, find the cube in the Outliner and rename it, open Object Properties and look at its exact Location/Rotation/Scale.
 :::
 
+Want to check whether all of this actually stuck? The [[ex:where-am-i|"Where Am I?"]] trainer runs short scenarios — "screen state → what will this action do" — exactly the kind this block was about. A few rounds before block 1, and Object Mode/Edit Mode stops being a source of confusion right when things get interesting.
+
 ## Common problems
 
 | Problem | Why it happens | Fix |
