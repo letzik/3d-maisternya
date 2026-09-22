@@ -10,6 +10,11 @@ A vehicle, a weapon, a ship, a building, a creature in a calm pose — anything 
 
 The key skill of the block is **recognizing the right tool from the shape of the task** instead of hunting through menus at random.
 
+<div class="fig-pair">
+  <figure><img src="{root}assets/img/b1/b1-do.webp" alt="A grey blockout of the ship with no color yet — the state right after the five tools" loading="lazy"><figcaption>Before — the blockout after session 2</figcaption></figure>
+  <figure><img src="{root}assets/img/b1/b1-pislya.webp" alt="The same ship, colored with five colors" loading="lazy"><figcaption>After — the palette from session 3</figcaption></figure>
+</div>
+
 ## Session 2 — the five tools
 
 Take your silhouette from the introductory session (or, if your idea has changed, start a new blockout — it takes a few minutes).
@@ -43,6 +48,11 @@ This is not what you have to build: you pick your own object, and the example be
 7. **Panel line — Loop Cut.** [[key:Ctrl+R]] across the fuselage roughly at the midpoint — a loop you can later use as the boundary of a hatch (a plan ahead for [[block:2]]).
 
 The result is a recognizable ship silhouette, built from exactly the same five actions as in the table above. Adapt every step to your own idea: instead of a ship it could be a car, a creature or a building — the sequence of actions stays the same.
+
+<figure class="fig">
+  <img src="{root}assets/img/b1/b1-mirror.gif" alt="A recording of the Blender editor: pulling out one wing on one side, the second wing appears instantly thanks to the Mirror modifier" loading="lazy">
+  <figcaption>Step 4 live: pull one wing — the other appears on its own</figcaption>
+</figure>
 
 A working order that goes well:
 
@@ -78,7 +88,7 @@ Continuing the example from session 2. Five functional parts, five colors:
 - **porthole** — a contrasting cool accent (say, cyan): the only genuinely “colorful” detail, which is exactly why it catches the eye first;
 - **the panel line from Loop Cut** — a thin dark stripe along the loop: optional, but it shows that the loop isn’t just technical — it “reads” on the silhouette too.
 
-This is the “contrast matters more than the number of shades” rule in practice: four of the five colors are variations on one neutral grey, and only one is genuinely contrasting. The eye reads at a glance where the object’s main detail is.
+This is the “contrast matters more than the number of shades” rule in practice: four of the five colors are variations on one neutral grey, and only one is genuinely contrasting. The eye reads at a glance where the object’s main detail is. (The result is the same “after” photo at the top of the page.)
 
 ::: checkpoint
 A finished, colored, symmetrical object — your first showpiece of the year. Save it and your intermediate versions as separate files (`_step1.blend`, `_step2.blend`): you’ll need them if you miss a session or want to go back to an earlier version.

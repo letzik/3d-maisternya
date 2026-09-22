@@ -431,7 +431,9 @@ class Md:
                 while j < len(lines) and lines[j].strip():
                     buf.append(lines[j])
                     j += 1
-                out.append("\n".join(buf))
+                raw = "\n".join(buf)
+                raw = raw.replace("{root}", root_prefix(self.path)).replace("{lang}", self.lang)
+                out.append(raw)
                 i = j
                 continue
             j, buf = i, []

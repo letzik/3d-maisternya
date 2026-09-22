@@ -180,6 +180,15 @@ tbody tr:hover td { background: color-mix(in srgb, var(--panel2) 55%, transparen
 .callout--tip, .callout--idea { --c: var(--accent); } .callout--warn { --c: var(--warn); }
 .callout--checkpoint { --c: var(--ok); background: color-mix(in srgb, var(--ok) 8%, var(--panel)); }
 .callout--challenge { --c: var(--z); background: color-mix(in srgb, var(--z) 8%, var(--panel)); } .callout--note { --c: var(--muted); }
+
+.fig { margin: 1.5em 0; }
+.fig img { width: 100%; display: block; border-radius: var(--r); border: 1px solid var(--line); background: var(--panel); }
+.fig figcaption { margin-top: .6em; font: 400 .85rem var(--f-mono); color: var(--muted); text-align: center; }
+.fig-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 1.5em 0; }
+.fig-pair figure { margin: 0; }
+.fig-pair img { width: 100%; display: block; border-radius: var(--r); border: 1px solid var(--line); background: var(--panel); }
+.fig-pair figcaption { margin-top: .5em; font: 400 .8rem var(--f-mono); color: var(--muted); text-align: center; }
+@media (max-width: 640px) { .fig-pair { grid-template-columns: 1fr; } }
 .codeblock { position: relative; margin: 0 0 1.3em; }
 .codeblock pre { margin: 0; overflow-x: auto; background: #0e1020; color: #e3e6f7; border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; font: 400 .85rem/1.6 var(--f-mono); }
 :root[data-theme="light"] .codeblock pre { background: #1d2033; }
