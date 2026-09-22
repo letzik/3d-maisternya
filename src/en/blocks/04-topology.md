@@ -1,6 +1,6 @@
 ## The idea of the block
 
-Until now the “done or not” judgment was purely visual: it looks as intended — so it’s done. Block 4 introduces a second criterion, invisible in a screenshot: **will this mesh survive movement?** A model can look perfect and yet break as soon as someone tries to bend it in a game or an animation, because inside the form there is a [[term:topology|topology]] with a random number of corners and triangular “fans” where a smooth bend should be.
+The “done or not” judgment was purely visual so far: it looks as intended — so it’s done. Block 4 introduces a second criterion, invisible in a screenshot: **will this mesh survive movement?** A model can look perfect and yet break as soon as someone tries to bend it in a game or an animation, because inside the form there is a [[term:topology|topology]] with a random number of corners and triangular “fans” where a smooth bend should be.
 
 The [[ex:clean-mesh|“Clean Mesh”]] trainer is exactly about this: three meshes that look the same, one bend, and only one deforms predictably. Start with it: [[app:clean-mesh|open the trainer]].
 

@@ -1,8 +1,8 @@
 ## The idea of the block
 
-Until now the model lived entirely inside Blender. Block 7 is about the last step, which often fails precisely because it seems a formality: **a correct export**. A model that looks perfect in Blender can arrive in another application a hundred times smaller, turned on its side or with black faces instead of color. The cause is always one of three: **transforms, scale, normals**.
+The model has lived entirely inside Blender so far. Block 7 is about the last step, which often fails precisely because it seems a formality: **a correct export**. A model that looks perfect in Blender can arrive in another application a hundred times smaller, turned on its side or with black faces instead of color. The cause is always one of three: **transforms, scale, normals**.
 
-::: idea Everyone has their own target
+::: idea The checklist is shared, the format isn’t
 Some prepare a model for Unity or Unreal (a future game portfolio), others for their own AR showcase in [[block:8|block 8]] (web, GLB). The checklist is the same, the file format differs by target.
 :::
 

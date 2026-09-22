@@ -174,10 +174,10 @@
       pick:"Обрати", next:"Наступний раунд →",
       labelWord:"Варіант", letters:"АБВ",
       whyCorrect:"Рівномірні петлі саме в зоні згину — чисті чотирикутники, жодного полюса.",
-      whySparse:"Замало петель у зоні згину — поверхня ламається різким зламом, а не гнеться.",
+      whyMisplaced:"Петель стільки ж, скільки в правильній сітці, — просто не там: густо на прямих ділянках, і лише три — у самому згині.",
       whyPole:"Трикутний віяльний полюс точно в зоні найбільшого згину — найгірше можливе місце для нього.",
       fbOk:"Так — ця сітка деформується передбачувано. Подивись, як плавно вона гнеться порівняно з іншими двома.",
-      fbWrongSparse:"Ні — це якраз та сітка, де петель замало: дивись, як вона ламається одним різким зламом.",
+      fbWrongMisplaced:"Ні — петель тут не менше, ніж у правильній сітці: рахунок не підводить, підводить розташування. У самій зоні згину їх лише три, а решта — там, де й так усе рівне.",
       fbWrongPole:"Ні — тут трикутний полюс точно в зоні згину, у найгіршому можливому місці.",
       footer:"Гурток «3D-Майстерня» · тренажер для домашньої практики між заняттями"
     },
@@ -190,10 +190,10 @@
       pick:"Choose", next:"Next round →",
       labelWord:"Option", letters:"ABC",
       whyCorrect:"Even loops right where the bend happens — clean quads, no pole.",
-      whySparse:"Too few loops in the bend zone — the surface creases sharply instead of curving.",
+      whyMisplaced:"Just as many loops as the correct mesh — only in the wrong place: dense on the flat stretches, and just three right in the bend.",
       whyPole:"A triangle-fan pole sits right at the point of maximum bend — the worst possible place for one.",
       fbOk:"Yes — this mesh deforms predictably. Watch how smoothly it bends compared to the other two.",
-      fbWrongSparse:"No — this is the one with too few loops: watch it crease in one sharp fold.",
+      fbWrongMisplaced:"No — this one doesn't have fewer loops than the correct mesh: the count isn't the problem, the placement is. Right in the bend there are only three, while the rest sit where the surface is flat anyway.",
       fbWrongPole:"No — this one has a triangle pole right in the bend zone, the worst place for it.",
       footer:"3D Workshop club · practice trainer for between sessions"
     }
@@ -222,7 +222,12 @@
   }
 
   var DENSE_ROWS  = [-1.4,-1.0,-0.68,-0.42,-0.3,-0.2,-0.1,0,0.1,0.2,0.3,0.42,0.68,1.0,1.4];
-  var SPARSE_ROWS = [-1.4, 0, 1.4];
+  // MISPLACED_ROWS: рівно стільки самих петель, що й у DENSE_ROWS (15), той самий
+  // загальний діапазон -1.4..1.4 — але густина «вивернута навиворіт»: багато петель
+  // на прямих ділянках (де вони нічого не роблять) і лише 3 (-0.4, 0, 0.4) у самій
+  // зоні згину (|s| <= W=0.55). Навмисно НЕ про «замало петель узагалі» — про те,
+  // що їхнє РОЗТАШУВАННЯ, а не сама кількість, вирішує, чи витримає сітка згин.
+  var MISPLACED_ROWS = [-1.4,-1.3,-1.2,-1.1,-0.98,-0.72,-0.40,0,0.40,0.72,0.98,1.1,1.2,1.3,1.4];
   var POLE_AT = DENSE_ROWS.indexOf(0);
 
   function buildBendMesh(rows, colCount, theta, poleAt){
@@ -369,7 +374,7 @@
 
   function whyText(kind){
     if(kind==="correct") return S().whyCorrect;
-    if(kind==="sparse") return S().whySparse;
+    if(kind==="misplaced") return S().whyMisplaced;
     return S().whyPole;
   }
 
@@ -384,9 +389,9 @@
     t.colCount = pick([4,5,6]);
 
     var slots = shuffle([
-      { kind:"correct", rows:DENSE_ROWS,  poleAt:-1 },
-      { kind:"sparse",  rows:SPARSE_ROWS, poleAt:-1 },
-      { kind:"pole",    rows:DENSE_ROWS,  poleAt:POLE_AT }
+      { kind:"correct",   rows:DENSE_ROWS,     poleAt:-1 },
+      { kind:"misplaced", rows:MISPLACED_ROWS, poleAt:-1 },
+      { kind:"pole",      rows:DENSE_ROWS,     poleAt:POLE_AT }
     ]);
     t.slots = slots;
     t.correctIdx = slots.findIndex(function(s){ return s.kind==="correct"; });
@@ -446,7 +451,7 @@
 
     var fb = document.getElementById("feedback");
     fb.className = "feedback show " + (ok?"ok":"bad");
-    fb.textContent = ok ? S().fbOk : (t.slots[i].kind==="sparse" ? S().fbWrongSparse : S().fbWrongPole);
+    fb.textContent = ok ? S().fbOk : (t.slots[i].kind==="misplaced" ? S().fbWrongMisplaced : S().fbWrongPole);
     document.getElementById("next-btn").style.display = "";
     recordResult(ok);
   }

@@ -11,7 +11,7 @@ It is a tool that **amplifies what is already built into the topology** (the num
 :::
 
 ::: idea A guiding principle: break the complex into parts
-[[term:merge|Merge]] and [[term:boolean|Boolean]] are not just a way to “add a detail to a finished object”. They are your first touch of a strategy that becomes critical in [[block:5]]: **a complex idea is not built as one solid piece**. You split it into logical parts (for a character — head, torso, limbs, weapon; for a car — body, wheels, interior details), work on each as its own object and assemble them only at the end. That makes it easier to keep everything in your head and to fix one part without risking the whole model.
+Behind [[term:merge|Merge]] and [[term:boolean|Boolean]] is a strategy that becomes critical in [[block:5]]: **a complex idea is not built as one solid piece**. You split it into logical parts (for a character — head, torso, limbs, weapon; for a car — body, wheels, interior details), work on each as its own object and assemble them only at the end. That makes it easier to keep everything in your head and to fix one part without risking the whole model.
 :::
 
 ## Session 4 — Knife and Subdivision Surface
