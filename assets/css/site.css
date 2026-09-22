@@ -181,6 +181,33 @@ tbody tr:hover td { background: color-mix(in srgb, var(--panel2) 55%, transparen
 .callout--checkpoint { --c: var(--ok); background: color-mix(in srgb, var(--ok) 8%, var(--panel)); }
 .callout--challenge { --c: var(--z); background: color-mix(in srgb, var(--z) 8%, var(--panel)); } .callout--note { --c: var(--muted); }
 
+
+/* ---------- tool animations (5 tools, Block 1) ---------- */
+.tanim-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 1.6em 0; }
+.tanim { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 8px 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.tanim svg { width: 68px; height: 68px; }
+.tanim b { font: 600 .92rem var(--f-head); }
+.tanim .tanim-key { font: 400 .74rem var(--f-mono); color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .tanim svg * { animation: none !important; } }
+
+@keyframes ta-extrude { 0%, 12% { transform: translateY(40px); opacity: .35; } 50%, 82% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(40px); opacity: .35; } }
+.ta-ex-top { animation: ta-extrude 2.6s ease-in-out infinite; }
+
+@keyframes ta-inset { 0%, 12% { transform: scale(1); opacity: .5; } 50%, 82% { transform: scale(.6); opacity: 1; } 100% { transform: scale(1); opacity: .5; } }
+.ta-inset-r { transform-box: fill-box; transform-origin: center; animation: ta-inset 2.6s ease-in-out infinite; }
+
+@keyframes ta-bevel-a { 0%, 12% { opacity: 1; } 50% { opacity: 0; } 88%, 100% { opacity: 1; } }
+@keyframes ta-bevel-b { 0%, 12% { opacity: 0; } 50% { opacity: 1; } 88%, 100% { opacity: 0; } }
+.ta-bevel-sharp { animation: ta-bevel-a 2.6s ease-in-out infinite; }
+.ta-bevel-chamfer { animation: ta-bevel-b 2.6s ease-in-out infinite; }
+
+@keyframes ta-loop { 0% { transform: translateX(-24px); opacity: 0; } 22% { opacity: 1; } 45%, 78% { transform: translateX(0); opacity: 1; } 100% { transform: translateX(-24px); opacity: 0; } }
+.ta-loop-l { animation: ta-loop 2.6s ease-in-out infinite; }
+
+@keyframes ta-mirror { 0%, 10% { transform: scaleX(0); opacity: 0; } 45%, 80% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(0); opacity: 0; } }
+.ta-mir-r { transform-box: fill-box; transform-origin: 0% 50%; animation: ta-mirror 2.6s ease-in-out infinite; }
+.ta-mir-l { transform-box: fill-box; transform-origin: 100% 50%; animation: ta-mirror 2.6s ease-in-out infinite; }
+
 .fig { margin: 1.5em 0; }
 .fig img { width: 100%; display: block; border-radius: var(--r); border: 1px solid var(--line); background: var(--panel); }
 .fig figcaption { margin-top: .6em; font: 400 .85rem var(--f-mono); color: var(--muted); text-align: center; }

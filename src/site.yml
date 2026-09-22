@@ -158,7 +158,7 @@ home:
     eyebrow: "// клуб 3D-моделювання · 2026–2027"
     title: "Бачити форму."
     title2: "Будувати світи."
-    lede: "Навчальний ресурс клубу «3D-Майстерня». Ми не вивчаємо одну програму — ми вчимося бачити прості форми в будь-якому об’єкті й збирати з них своє: персонажів, транспорт, зброю, будівлі, реквізит для ігор."
+    lede: "Навчальний ресурс клубу «3D-Майстерня». Ми не вивчаємо одну програму — ми вчимося бачити прості форми в будь-якому об’єкті й збирати з них своє: персонажів, транспорт, будівлі, реквізит для ігор."
     cta_start: "Почати з першого кроку"
     cta_program: "Карта року"
     idea_title: "Ідея в трьох кроках"
@@ -175,14 +175,14 @@ home:
       - {t: "Комп’ютер", d: "Звичайний ПК чи ноутбук — цього достатньо."}
       - {t: "Blender", d: "Безкоштовна програма для 3D. Ми працюємо в Blender 5.2 LTS."}
       - {t: "Телефон", d: "Для блоку 8: власна модель у доповненій реальності. iOS чи Android."}
-      - {t: "Своя ідея", d: "Персонаж, транспорт, зброя, будівля — що цікаво вам. Досвід не потрібен."}
+      - {t: "Своя ідея", d: "Персонаж, транспорт, будівля — що цікаво вам. Досвід не потрібен."}
     need_blender: "Завантажити Blender"
     languages_note: "Ресурс двомовний: перемикач мови вгорі відкриває ту саму сторінку іншою мовою."
   en:
     eyebrow: "// 3D modeling club · 2026–2027"
     title: "See the shape."
     title2: "Build worlds."
-    lede: "The learning resource of the “3D Workshop” club. We don’t learn one program — we learn to see simple shapes in any object and to assemble our own things from them: characters, vehicles, weapons, buildings, game props."
+    lede: "The learning resource of the “3D Workshop” club. We don’t learn one program — we learn to see simple shapes in any object and to assemble our own things from them: characters, vehicles, buildings, game props."
     cta_start: "Start with the first step"
     cta_program: "Year map"
     idea_title: "The idea in three steps"
@@ -199,6 +199,6 @@ home:
       - {t: "A computer", d: "An ordinary PC or laptop is enough."}
       - {t: "Blender", d: "Free 3D software. We work in Blender 5.2 LTS."}
       - {t: "A phone", d: "For block 8: your own model in augmented reality. iOS or Android."}
-      - {t: "Your own idea", d: "A character, vehicle, weapon, building — whatever interests you. No experience needed."}
+      - {t: "Your own idea", d: "A character, vehicle, building — whatever interests you. No experience needed."}
     need_blender: "Download Blender"
     languages_note: "This resource is bilingual: the language switch at the top opens the same page in the other language."

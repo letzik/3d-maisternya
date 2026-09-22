@@ -27,6 +27,51 @@
 | [[term:loop-cut|Loop Cut]] [[key:Ctrl+R]] | додає петлю ребер упоперек форми | розрізати крило, щоб потім витягнути елерон |
 | [[term:mirror|Mirror]] (модифікатор) | дзеркалить половину відносно осі | вмикається першим — і про нього забуваєш |
 
+<div class="tanim-grid">
+  <div class="tanim">
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <line x1="26" y1="70" x2="74" y2="70" stroke="var(--line)" stroke-width="3"/>
+      <line class="ta-ex-top" x1="26" y1="30" x2="74" y2="30" stroke="var(--accent)" stroke-width="3"/>
+      <path d="M50 63 L50 33 M44 41 L50 32 L56 41" stroke="var(--warn)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <b>Extrude</b>
+    <span class="tanim-key"><kbd>E</kbd></span>
+  </div>
+  <div class="tanim">
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <rect x="20" y="20" width="60" height="60" fill="none" stroke="var(--line)" stroke-width="3"/>
+      <rect class="ta-inset-r" x="20" y="20" width="60" height="60" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+    </svg>
+    <b>Inset</b>
+    <span class="tanim-key"><kbd>I</kbd></span>
+  </div>
+  <div class="tanim">
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <path class="ta-bevel-sharp" d="M25 75 L25 25 L75 25" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path class="ta-bevel-chamfer" d="M25 75 L25 40 L40 25 L75 25" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <b>Bevel</b>
+    <span class="tanim-key"><kbd>Ctrl</kbd><kbd>B</kbd></span>
+  </div>
+  <div class="tanim">
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <rect x="20" y="20" width="60" height="60" fill="none" stroke="var(--line)" stroke-width="3"/>
+      <line class="ta-loop-l" x1="50" y1="20" x2="50" y2="80" stroke="var(--accent)" stroke-width="2.5"/>
+    </svg>
+    <b>Loop Cut</b>
+    <span class="tanim-key"><kbd>Ctrl</kbd><kbd>R</kbd></span>
+  </div>
+  <div class="tanim">
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <line x1="50" y1="15" x2="50" y2="85" stroke="var(--line)" stroke-width="2" stroke-dasharray="3 3"/>
+      <polygon class="ta-mir-r" points="52,50 78,35 78,65" fill="var(--accent)" opacity=".85"/>
+      <polygon class="ta-mir-l" points="48,50 22,35 22,65" fill="var(--accent)" opacity=".85"/>
+    </svg>
+    <b>Mirror</b>
+    <span class="tanim-key">modifier</span>
+  </div>
+</div>
+
 ### Кожен інструмент трохи ближче
 
 - **[[term:extrude|Extrude]] ([[key:E]]).** Після натискання рухай мишею — витягування піде вздовж нормалі грані (найчастіше саме це й потрібно). Щоб обмежити рух однією віссю, натисни ще й [[key:X]], [[key:Y]] чи [[key:Z]] одразу після [[key:E]]. Якщо гізмо зі стрілками не з'явилось — перевір, що ти в Edit Mode, а не в Object Mode: там [[key:E]] на сітку не подіє.
