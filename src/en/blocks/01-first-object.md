@@ -119,6 +119,11 @@ In a “grown-up” workflow there would be a separate, tedious stage here: unfo
 - **A material per face.** In Edit Mode select the faces you need (face select mode — the third icon at the top left, or [[key:3]]) → in the Properties panel on the right open the Material tab (the checkered-sphere icon) → New → rename the material right away (a habit that pays off again in [[block:7]]) → change the Base Color → press Assign. If Assign is greyed out, you’re either not in Edit Mode or nothing is selected.
 - **[[term:vertex-paint|Vertex Paint]].** Switch the mode dropdown at the top left (where Object Mode/Edit Mode usually is) to Vertex Paint, pick a brush color on the left and paint straight onto the vertices. Faster for organic, smooth color transitions; Assign-by-face is more precise for sharp boundaries between colored areas.
 
+<figure class="fig">
+  <img src="{root}assets/img/b1/b1-material-en.webp" alt="Material Properties tab: material list, a renamed material called 'Hull_grey', Assign/Select/Deselect buttons, the Base Color field" loading="lazy">
+  <figcaption>Material Properties: the material renamed right away, Base Color already changed</figcaption>
+</figure>
+
 To see color in the viewport, switch the display to **Material Preview** (the sphere button at the top right).
 
 **The palette principle:** 4–6 colors for the whole object is already enough. Fewer and the object looks monotonous, more and it’s hard to keep it coherent. Contrast between neighboring faces matters more than the number of shades. And the rule “**one part — one color**”: don’t mix shades within a single functional part.
