@@ -8,6 +8,11 @@ This block isn't about "what every button does." It's about not getting lost: ho
 **The viewport** (the big central area) — the 3D scene itself. **The object hierarchy** (the Outliner, top-right corner) — a list of everything on the scene. **Properties** (bottom-right corner) — a set of tabs with details about the selected object. **The mode header** (above the viewport) — the switch between Object Mode and Edit Mode, and what exactly gets selected.
 :::
 
+<figure class="fig">
+  <img src="{root}assets/img/b0/b0-overview.webp" alt="Blender's default window right after launch: a cube in the viewport, the Outliner top-right, Properties bottom-right" loading="lazy">
+  <figcaption>Blender's default window — the same four zones, live</figcaption>
+</figure>
+
 ## Session 1 — the viewport, selection, hierarchy and panels
 
 Open Blender. By default the scene already has a cube, a camera and a light — don't delete them yet, they're useful landmarks for your first mouse movements.
@@ -31,6 +36,11 @@ If an object "gets lost" — slides out of the visible area or turns out to be m
 In the top-right corner of the viewport there's a small ball with six labeled circles — X, Y, Z and their opposite directions. This is the orientation gizmo, and it does two jobs at once.
 
 First, it always shows which way the camera is currently facing relative to the three axes: red is X, green is Y, blue is Z (this color coding repeats everywhere in Blender, so it's worth memorizing right away). Second, clicking any of those circles instantly snaps the camera to a strict orthographic view along that axis (a view exactly from the front, exactly from the side, exactly from the top). That's faster and more precise than trying to eyeball it.
+
+<figure class="fig">
+  <img src="{root}assets/img/b0/b0-gizmo.webp" alt="The orientation gizmo in the viewport's top-right corner: circles for X (red), Y (green), Z (blue), with zoom, pan and camera-view buttons below" loading="lazy">
+  <figcaption>The orientation gizmo up close: X red, Y green, Z blue</figcaption>
+</figure>
 
 The numpad gives the same results, if you have one: [[key:1]] for front view, [[key:3]] for side view, [[key:7]] for top view, [[key:Ctrl]] plus the same digit for the opposite side, [[key:5]] to toggle between perspective and orthographic projection. On a laptop without a numpad, the same set is reachable through the "View → Viewpoint" menu, or the [[key:~]] (tilde) pie menu for quick view selection.
 
@@ -57,11 +67,21 @@ Selection in Blender works on two different levels, and mixing them up is the si
 
 A practical rule that saves you nine times out of ten: if a tool "does nothing," check in order — (1) am I actually in Edit Mode, not Object Mode? (2) is something actually selected, not an empty set? (3) am I in the selection mode (vertex/edge/face) this particular tool expects?
 
+<div class="fig-pair">
+  <figure><img src="{root}assets/img/b0/b0-select-icons.webp" alt="Three selection-mode icons in the viewport header: vertex, edge, face — the third (blue) icon active, face select mode" loading="lazy"><figcaption>The three selection-mode icons — face mode active</figcaption></figure>
+  <figure><img src="{root}assets/img/b0/b0-face-selected.webp" alt="A cube in Edit Mode with its top face selected, highlighted in orange" loading="lazy"><figcaption>The result: the selected face highlighted in orange</figcaption></figure>
+</div>
+
 ### The object hierarchy (Outliner)
 
 The panel in the top-right corner is a tree list of everything on the scene: collections, objects inside them, and each object's own data (mesh, modifiers, materials). Clicking an object's name in the Outliner selects it in the viewport, exactly like clicking the object itself — handy when the object you need is hidden behind others or too small to grab.
 
 The eye icon next to each object hides or shows it in the viewport without deleting anything — useful for temporarily getting clutter out of the way without any risk of losing it. Double-clicking a name lets you rename the object right there.
+
+<figure class="fig">
+  <img src="{root}assets/img/b0/b0-outliner-en.webp" alt="The Outliner panel listing Camera, Light, Hull (selected), Wing_left, Wing_right, with an eye icon next to each" loading="lazy">
+  <figcaption>The Outliner with meaningful names instead of Cube.001/Cube.002</figcaption>
+</figure>
 
 ::: tip Rename as you go, not at the end
 Getting into the habit of giving objects and materials clear names right away (not "Cube.003" but "Hull" or "Wing_left") feels like a minor detail while you're alone with one object, but it saves real trouble once a scene has ten of them — you'll need it already in [[block:2]], where a complex model is assembled from several parts, and it becomes critical in [[block:7]], where the order and names of objects determine exactly what ends up in the exported file and how.
@@ -82,11 +102,21 @@ The vertical column of small icons in the bottom-right corner is the Properties 
 
 The Object Properties tab (orange square) is worth remembering on its own: that's where the numeric Location X/Y/Z, Rotation X/Y/Z and Scale X/Y/Z fields live. The mouse (via [[key:G]], [[key:R]], [[key:S]] — Move, Rotate, Scale) is great for moving an object "by eye," but this panel is where you set an exact value, or notice that an object got rotated to 47° instead of a clean 45°.
 
+<figure class="fig">
+  <img src="{root}assets/img/b0/b0-objprops-en.webp" alt="The Object Properties tab (orange square active in the left column) with Location, Rotation Z 47 degrees, Scale fields" loading="lazy">
+  <figcaption>Object Properties: the exact 47°-instead-of-45° case</figcaption>
+</figure>
+
 ### Modifiers — the general idea
 
 The wrench icon in the Properties column opens the Modifier Properties tab. A modifier is an operation that **doesn't change the mesh itself immediately or permanently** — it's layered on top like a transparent sheet: the object looks in the viewport as if the operation has already been applied, but underneath, the original geometry stays untouched, and any modifier can be turned off, changed or removed with no consequences for the base shape.
 
 That's exactly what Mirror turns out to be in [[block:1]]: you add it through Add Modifier → Generate → Mirror, and half the object starts mirroring in real time while you edit only the other half. The two eye icons next to each modifier in the list control whether its effect shows in the viewport and whether it shows in the final render, independently — handy for temporarily switching off a heavy modifier without losing its settings. The Apply button "bakes" a modifier into the mesh permanently — that's an action without an easy way back, so it's not worth rushing into on early blockouts.
+
+<figure class="fig">
+  <img src="{root}assets/img/b0/b0-modifier-en.webp" alt="The Modifier Properties tab (wrench active) with a Mirror modifier added: X axis active, two eye icons for viewport and render visibility" loading="lazy">
+  <figcaption>Modifier Properties with Mirror already added — the same one needed in Block 1</figcaption>
+</figure>
 
 ::: checkpoint
 Open Blender with a clean scene. Orbit, pan and zoom the viewport with the mouse, switch to a strict front and top view through the gizmo or the numpad, enter Edit Mode on the cube and select everything in turn by vertex, edge and face mode, find the cube in the Outliner and rename it, open Object Properties and look at its exact Location/Rotation/Scale.
