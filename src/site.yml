@@ -167,7 +167,7 @@ home:
       - {n: "02", t: "Розкласти", d: "Складну ідею не будують суцільним шматком. Її розбивають на 3–5 частин, кожну опрацьовують окремо й збирають у фіналі."}
       - {n: "03", t: "Зібрати", d: "Кожен блок закінчується реальним артефактом, який можна показати: від першого кольорового об’єкта до моделі в AR на телефоні."}
     map_title: "Карта року"
-    map_lede: "Дев’ять блоків — від першого об’єкта за одне заняття до портфоліо-сторінки. Кожен закінчується чекпоінтом і має «виклик» для тих, хто швидший."
+    map_lede: "Десять блоків — від орієнтації в інтерфейсі до портфоліо-сторінки. Кожен закінчується чекпоінтом і має «виклик» для тих, хто швидший."
     ex_title: "Потренуйся між заняттями"
     ex_lede: "Короткі інтерактивні вправи працюють прямо в браузері, без встановлення й реєстрації."
     need_title: "Що потрібно"
@@ -191,7 +191,7 @@ home:
       - {n: "02", t: "Break down", d: "A complex idea is not built as one solid piece. Split it into 3–5 parts, work on each separately and assemble them at the end."}
       - {n: "03", t: "Assemble", d: "Every block ends with a real artifact you can show: from your first colored object to a model in AR on your phone."}
     map_title: "Year map"
-    map_lede: "Nine blocks — from a first object in a single session to a portfolio page. Each one ends with a checkpoint and has a “challenge” for those who move faster."
+    map_lede: "Ten blocks — from finding your way around the interface to a portfolio page. Each one ends with a checkpoint and has a “challenge” for those who move faster."
     ex_title: "Practice between sessions"
     ex_lede: "Short interactive exercises run right in the browser — nothing to install, no sign-up."
     need_title: "What you need"

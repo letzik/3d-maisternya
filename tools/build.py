@@ -58,6 +58,7 @@ def svg(inner, cls="ico", size=24, sw=1.7):
 
 
 ICON_PATHS = {
+    "interface": '<rect x="3" y="4" width="18" height="15" rx="1.6"/><circle cx="16.5" cy="8" r="2.2"/><path d="M16.5 5.8V8M16.5 8h2.2M16.5 8l-1.6 1.6"/><path d="M6.5 16v-5l3-2 3 2v5"/>',
     "cube": '<path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/>',
     "knife": '<path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z"/><path d="M2.5 15.5 21.5 8.5" stroke-dasharray="2 2.4"/>',
     "reference": '<rect x="3" y="5" width="18" height="14" rx="1.6"/><path d="M6 16c1.6-4.4 3.6-6 6-6s4.4 1.6 6 6"/><path d="M6 16h12"/><circle cx="9" cy="16.6" r="1"/><circle cx="15" cy="16.6" r="1"/>',
@@ -92,6 +93,13 @@ ICON_PATHS = {
 
 def icon(name, cls="ico", size=24):
     return svg(ICON_PATHS[name], cls=cls, size=size)
+
+
+def sessions_word(lang, count_str, default):
+    """Grammatically correct 'session(s)' noun for a single number like "1" (ranges like "2–3" keep the plural default)."""
+    if count_str.strip() != "1":
+        return default
+    return "заняття" if lang == "uk" else "session"
 
 
 LOGO = ('<svg class="logo" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">'
@@ -637,7 +645,7 @@ def cards_blocks(lang, path):
             f'<span class="bcard__top"><span class="bcard__num">{b["num"]:02d}</span>{icon(b["icon"], "ico bcard__ico", 40)}</span>'
             f'<span class="bcard__t">{esc(b["title"][lang])}</span>'
             f'<span class="bcard__d">{esc(b["tagline"][lang])}</span>'
-            f'<span class="bcard__meta"><span>{icon("clock", "ico ico-sm", 15)} {b["sessions"]} {u["sessions_word"]}</span>'
+            f'<span class="bcard__meta"><span>{icon("clock", "ico ico-sm", 15)} {b["sessions"]} {sessions_word(lang, b["sessions"], u["sessions_word"])}</span>'
             f'<span class="bcard__done" data-check="{b["num"]}">{icon("check", "ico ico-sm", 15)}</span></span></a>')
     return f'<div class="bgrid">{"".join(out)}</div>'
 
@@ -708,7 +716,7 @@ def build_simple(lang, name, *, crumb_trail=None, toc=True):
 
 def pager_simple(lang, name, path):
     u = UI[lang]
-    nxt = {"start": ("block:1", u["next_intro"]), "program": ("start", None)}.get(name)
+    nxt = {"start": ("block:0", u["next_intro"]), "program": ("start", None)}.get(name)
     if not nxt or not nxt[1]:
         return ""
     page = PAGES[(lang, nxt[0])]
@@ -751,7 +759,7 @@ def build_block(lang, b):
         f'<div class="bhero__ico">{icon(b["icon"], "ico", 56)}</div>'
         f'<p class="eyebrow">// {esc(u["block_word"])} {n} {esc(u["of"])} {len(BLOCKS)} · {esc(u["sessions_word"])} {esc(b["range"])}</p>'
         f'<h1>{esc(b["title"][lang])}</h1><p class="lede">{esc(b["tagline"][lang])}</p>'
-        f'<dl class="facts"><div><dt>{icon("clock", "ico ico-sm", 16)} {esc(u["time_label"])}</dt><dd>{b["sessions"]} {esc(u["sessions_word"])} · {esc(u["hours_each"])}</dd></div>'
+        f'<dl class="facts"><div><dt>{icon("clock", "ico ico-sm", 16)} {esc(u["time_label"])}</dt><dd>{b["sessions"]} {esc(sessions_word(lang, b["sessions"], u["sessions_word"]))} · {esc(u["hours_each"])}</dd></div>'
         f'<div><dt>{icon("flag", "ico ico-sm", 16)} {esc(u["checkpoint_label"])}</dt><dd>{esc(b["checkpoint"][lang])}</dd></div>'
         f'<div><dt>{icon("bolt", "ico ico-sm", 16)} {esc(u["challenge_label"])}</dt><dd>{esc(b["challenge"][lang])}</dd></div></dl></header>')
     # related

@@ -1,8 +1,30 @@
-# The nine blocks of the year. Body text lives in src/<lang>/blocks/<slug>.md.
+# The ten blocks of the year (0–9). Body text lives in src/<lang>/blocks/<slug>.md.
 # Everything that appears on cards, in the program table and in navigation lives here.
-# sessions: what the program plans (a range is fine); range: approximate session numbers in the year (intro = 1).
+# sessions: what the program plans (a range is fine); range: approximate session numbers in the year (block 0 = 1).
 
 blocks:
+  - num: 0
+    slug: 00-interface
+    icon: interface
+    sessions: "1"
+    range: "1"
+    exercises: []
+    title:
+      uk: "Інтерфейс Blender"
+      en: "The Blender interface"
+    tagline:
+      uk: "В’юпорт, навігація по осях, виділення, ієрархія об’єктів і панелі властивостей — до першого блокауту."
+      en: "The viewport, axis navigation, selection, the object hierarchy and property panels — before your first blockout."
+    checkpoint:
+      uk: "Впевнено обертаєш вид, вибираєш об’єкти й елементи сітки та знаходиш потрібну панель властивостей без підказки."
+      en: "You confidently orbit the view, select objects and mesh elements, and find the right properties panel without being told."
+    challenge:
+      uk: "Знайди на своїй клавіатурі (з нампадом і без) усі шість ортографічних видів і навчи цьому сусіда за партою."
+      en: "Find all six orthographic views on your own keyboard (with or without a numpad) and teach the trick to the person next to you."
+    further:
+      - {title: "Blender Manual — Basic Controls", url: "https://docs.blender.org/manual/en/latest/editors/3dview/navigate/basic.html", note: {uk: "офіційний опис навігації у в’юпорті", en: "the official viewport-navigation reference"}}
+      - {title: "Blender Manual — Selecting", url: "https://docs.blender.org/manual/en/latest/scene_layout/object/selecting.html", note: {uk: "усі способи виділення об’єктів", en: "every way to select objects"}}
+
   - num: 1
     slug: 01-first-object
     icon: cube

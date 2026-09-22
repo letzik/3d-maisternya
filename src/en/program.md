@@ -1,8 +1,8 @@
 ---
 title: "The year’s program"
 eyebrow: "// 2026–2027"
-lede: "Nine blocks from a first object in a single session to a portfolio page. Every block ends with a checkpoint and has a challenge."
-description: "The 3D Workshop club’s program for the year: nine blocks, checkpoints, challenges and guiding rules."
+lede: "Ten blocks from finding your way around the interface to a portfolio page. Every block ends with a checkpoint and has a challenge."
+description: "The 3D Workshop club’s program for the year: ten blocks, checkpoints, challenges and guiding rules."
 ---
 
 ## The block map

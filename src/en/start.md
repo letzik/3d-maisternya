@@ -57,7 +57,7 @@ The question we’ll keep asking each other all year: **“What shapes is this m
 
 ## How the year works
 
-- Nine [[page:program|blocks]] go in order: tools → color → references → topology → flagship project → rigging → export → AR → portfolio.
+- Ten [[page:program|blocks]] go in order: interface → tools → color → references → topology → flagship project → rigging → export → AR → portfolio.
 - **Save intermediate versions as separate files** (`_step1.blend`, `_step2.blend`). If you miss a session, you continue from a checkpoint instead of from zero.
 - Every block has a [[term:checkpoint|checkpoint]] and a [[term:challenge|challenge]]. A challenge is a harder version of the same task for those who are faster — not a separate track.
 - Every two or three sessions there is a short show-and-tell with feedback: what worked and one piece of advice. The word “bad” is not part of the feedback.
