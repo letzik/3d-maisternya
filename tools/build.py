@@ -95,17 +95,33 @@ def icon(name, cls="ico", size=24):
     return svg(ICON_PATHS[name], cls=cls, size=size)
 
 
-def sessions_word(lang, count_str, default):
-    """Grammatically correct 'session(s)' noun for a single number like "1" (ranges like "2–3" keep the plural default)."""
-    if count_str.strip() != "1":
-        return default
-    return "заняття" if lang == "uk" else "session"
+def sessions_word(lang, count_str, default=None):
+    """Correct noun for a count or range: 1 заняття, 2–3 заняття, 4–5 занять; 1 session, 2 sessions."""
+    nums = re.findall(r"\d+", str(count_str))
+    n = int(nums[-1]) if nums else 5
+    if lang != "uk":
+        return "session" if str(count_str).strip() == "1" else "sessions"
+    if n % 10 == 1 and n % 100 != 11:
+        return "заняття"
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return "заняття"
+    return "занять"
 
 
-LOGO = ('<svg class="logo" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">'
-        '<path d="M16 3 4 9.8v12.4L16 29l12-6.8V9.8L16 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'
-        '<path d="M4 9.8 16 16.6l12-6.8M16 16.6V29" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'
-        '<path d="M16 3v13.6L4 9.8Z" fill="var(--accent)" stroke="none" opacity=".9"/></svg>')
+LOGO = ('<svg class="logo" viewBox="-4 -4 108 123.47" width="28" height="32" aria-hidden="true" focusable="false">'
+        '<polygon class="logo__top" points="50,0 100,28.87 50,57.74 0,28.87"/>'
+        '<polygon class="logo__side" points="100,28.87 100,86.6 50,115.47 50,57.74"/>'
+        '<path class="logo__edge" pathLength="1" d="M50,0 L0,28.87 L0,86.6 L50,115.47 M0,28.87 L50,57.74 L50,115.47"/>'
+        '<circle class="logo__dot" cx="50" cy="57.74" r="9"/></svg>')
+
+ART = json.loads((SRC / "art.json").read_text(encoding="utf-8"))
+VP_BY_EX = {"where-am-i": "wireframe", "see-shapes": "xray", "clean-mesh": "subdivision"}
+
+
+def brand_html(u):
+    """'3D-Майстерня' -> 3D <em>Майстерня</em> (the hyphen stays in running text only)."""
+    head, _, word = u["site_name"].replace("-", " ", 1).partition(" ")
+    return f'{esc(head)} <em>{esc(word)}</em>'
 
 # ----------------------------------------------------------------------------- utilities
 UK_TR = {"а": "a", "б": "b", "в": "v", "г": "h", "ґ": "g", "д": "d", "е": "e", "є": "ie", "ж": "zh", "з": "z",
@@ -402,7 +418,7 @@ class Md:
                 hid = hid or self.heading_id(text_)
                 if level == 2:
                     self.headings.append((hid, strip_tags(inner)))
-                out.append(f'<h{level} id="{hid}"><a class="anchor" href="#{hid}" aria-label="link">#</a>{inner}</h{level}>')
+                out.append(f'<h{level} id="{hid}"><a class="anchor" href="#{hid}" aria-label="{esc(UI[self.lang]["anchor_link"])}">#</a>{inner}</h{level}>')
                 i += 1
                 continue
             if re.match(r"^(-{3,}|\*{3,})\s*$", ln):
@@ -475,14 +491,15 @@ def nav_html(lang, path):
     drop = "".join(
         f'<a class="dd__item" href="{rel(path, PAGES[(lang, "block:" + str(b["num"]))]["path"])}"'
         f'{" aria-current=page" if PAGES[(lang, "block:" + str(b["num"]))]["path"] == path else ""}>'
-        f'<span class="dd__num">{b["num"]}</span><span>{esc(b["title"][lang])}</span></a>' for b in BLOCKS)
+        f'<span class="dd__num">{b["num"]:02d}</span><span>{esc(b["title"][lang])}</span></a>' for b in BLOCKS)
     return (
         f'<nav class="nav" id="site-nav" aria-label="{esc(u["menu"])}">'
-        f'{a("start", u["nav_start"])}{a("program", u["nav_program"])}'
-        f'<div class="dd"><button class="nav__link dd__btn{" is-current" if in_blocks else ""}" type="button" aria-expanded="false" aria-controls="dd-blocks">'
-        f'{u["nav_blocks"]}{icon("chevron", "ico ico-sm", 14)}</button>'
-        f'<div class="dd__panel" id="dd-blocks">{drop}</div></div>'
-        f'{a("exercises", u["nav_exercises"])}{a("glossary", u["nav_glossary"])}{a("resources", u["nav_resources"])}{a("about", u["nav_about"])}'
+        f'{a("start", u["nav_start"])}'
+        f'<div class="dd"><button class="nav__link dd__btn{" is-current" if in_blocks or PAGES[(lang, "program")]["path"] == path else ""}" type="button" aria-expanded="false" aria-controls="dd-blocks">'
+        f'{u["nav_program"]}{icon("chevron", "ico ico-sm", 14)}</button>'
+        f'<div class="dd__panel" id="dd-blocks">{drop}'
+        f'<a class="dd__all" href="{rel(path, PAGES[(lang, "program")]["path"])}">{esc(u["all_program"])} →</a></div></div>'
+        f'{a("exercises", u["nav_exercises"])}{a("glossary", u["nav_glossary"])}{a("about", u["nav_about"])}'
         f'</nav>')
 
 
@@ -490,14 +507,14 @@ def header_html(lang, path):
     u = UI[lang]
     home = rel(path, f"{lang}/index.html")
     _, other_path = hreflang_links(lang, path)
-    sw = (f'<div class="langsw" role="group" aria-label="Language">'
+    sw = (f'<div class="langsw" role="group" aria-label="{esc(u["lang_group"])}">'
           f'<a class="langsw__opt{" is-on" if lang == "uk" else ""}" href="{rel(path, re.sub("^" + lang + "/", "uk/", path))}" hreflang="uk" lang="uk"'
           f'{" aria-current=true" if lang == "uk" else ""}>UA</a>'
           f'<a class="langsw__opt{" is-on" if lang == "en" else ""}" href="{rel(path, re.sub("^" + lang + "/", "en/", path))}" hreflang="en" lang="en"'
           f'{" aria-current=true" if lang == "en" else ""}>EN</a></div>')
     return (
         f'<header class="site-header"><div class="site-header__in">'
-        f'<a class="brand" href="{home}">{LOGO}<span class="brand__t"><b>{esc(u["site_name"])}</b><small>{esc(u["site_sub"])}</small></span></a>'
+        f'<a class="brand" href="{home}">{LOGO}<span class="brand__t"><b>{brand_html(u)}</b><small>{esc(u["site_sub"])}</small></span></a>'
         f'{nav_html(lang, path)}'
         f'<div class="tools">'
         f'<button class="iconbtn" type="button" data-search-open aria-label="{esc(u["search"])}" title="{esc(u["search"])}">{icon("search")}</button>'
@@ -517,7 +534,7 @@ def footer_html(lang, path):
 
     return (
         f'<footer class="site-footer"><div class="site-footer__in">'
-        f'<div><p class="foot-brand">{LOGO}<b>{esc(u["site_name"])}</b></p><p class="foot-org">{esc(u["footer_org"])}</p>'
+        f'<div><p class="foot-brand">{LOGO}<b>{brand_html(u)}</b></p><p class="foot-org">{esc(u["footer_org"])}</p>'
         f'<p class="foot-note">{esc(u["footer_note"])}</p></div>'
         f'<div><p class="foot-h">{esc(u["footer_learn"])}</p><ul>{a("start", u["nav_start"])}{a("program", u["nav_program"])}'
         f'{a("exercises", u["nav_exercises"])}{a("glossary", u["nav_glossary"])}</ul></div>'
@@ -531,7 +548,7 @@ def search_dialog(lang):
     return (f'<div class="search" id="search" role="dialog" aria-modal="true" aria-label="{esc(u["search"])}" hidden>'
             f'<div class="search__box"><div class="search__row">{icon("search")}'
             f'<input id="search-input" type="search" autocomplete="off" placeholder="{esc(u["search_placeholder"])}" aria-label="{esc(u["search"])}">'
-            f'<button class="iconbtn" type="button" data-search-close aria-label="Close">{icon("close")}</button></div>'
+            f'<button class="iconbtn" type="button" data-search-close aria-label="{esc(u["close"])}">{icon("close")}</button></div>'
             f'<ul class="search__results" id="search-results"></ul>'
             f'<p class="search__hint" data-none="{esc(u["search_none"])}" data-default="{esc(u["search_hint"])}">{esc(u["search_hint"])}</p></div></div>')
 
@@ -542,11 +559,12 @@ THEME_INIT = ("<script>(function(){try{var t=localStorage.getItem('3dm-theme');"
               "if(!t){t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'}"
               "document.documentElement.setAttribute('data-theme',t);"
               "var m=document.getElementById('theme-color-meta');if(m)m.setAttribute('content',t==='light'?'" + THEME_COLORS["light"] + "':'" + THEME_COLORS["dark"] + "');"
+              "if(!sessionStorage.getItem('3dm-lg')){document.documentElement.classList.add('lg-play');sessionStorage.setItem('3dm-lg','1')}"
               "}catch(e){document.documentElement.setAttribute('data-theme','dark')}})()</script>")
 
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
-         '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700'
-         '&family=Oswald:wght@500;600;700&display=swap">')
+         '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600'
+         '&family=Oswald:wght@600;700&display=swap">')
 
 
 def breadcrumbs(lang, path, trail):
@@ -575,7 +593,7 @@ def sidebar_blocks(lang, path):
         p = PAGES[(lang, f"block:{b['num']}")]["path"]
         cur = ' aria-current="page"' if p == path else ""
         lis.append(f'<li><a class="side__link{" is-current" if p == path else ""}" href="{rel(path, p)}"{cur}>'
-                   f'<span class="side__num">{b["num"]}</span><span class="side__t">{esc(b["title"][lang])}</span>'
+                   f'<span class="side__num">{b["num"]:02d}</span><span class="side__t">{esc(b["title"][lang])}</span>'
                    f'<span class="side__check" data-check="{b["num"]}">{icon("check", "ico", 16)}</span></a></li>')
     return (f'<nav class="side" aria-label="{esc(u["all_blocks"])}"><p class="side__title">{esc(u["all_blocks"])}</p>'
             f'<ol class="side__list">{"".join(lis)}</ol>'
@@ -616,6 +634,8 @@ def page_shell(lang, path, title, description, main, *, sidebar="", toc="", crum
         f'<title>{esc(full_title)}</title><meta name="description" content="{esc(description)}">'
         f'<meta property="og:title" content="{esc(full_title)}"><meta property="og:description" content="{esc(description)}">'
         f'<meta property="og:type" content="website"><meta property="og:url" content="{SITE_URL}{path}">'
+        f'<meta property="og:image" content="{SITE_URL}assets/img/og-{lang}.png"><meta property="og:image:width" content="1200">'
+        f'<meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">'
         f'<meta name="theme-color" id="theme-color-meta" content="#161826">{hl}'
         f'<link rel="icon" href="{root}assets/img/favicon.svg" type="image/svg+xml">'
         f'<link rel="apple-touch-icon" href="{root}assets/img/apple-touch-icon.png">'
@@ -649,10 +669,10 @@ def cards_blocks(lang, path):
         p = PAGES[(lang, f"block:{b['num']}")]["path"]
         out.append(
             f'<a class="bcard" href="{rel(path, p)}" data-block="{b["num"]}">'
-            f'<span class="bcard__top"><span class="bcard__num">{b["num"]:02d}</span>{icon(b["icon"], "ico bcard__ico", 40)}</span>'
+            f'<span class="bcard__top"><span class="bcard__num" style="view-transition-name:bnum-{b["num"]}">{b["num"]:02d}</span>{icon(b["icon"], "ico bcard__ico", 40)}</span>'
             f'<span class="bcard__t">{esc(b["title"][lang])}</span>'
             f'<span class="bcard__d">{esc(b["tagline"][lang])}</span>'
-            f'<span class="bcard__meta"><span>{icon("clock", "ico ico-sm", 15)} {b["sessions"]} {sessions_word(lang, b["sessions"], u["sessions_word"])}</span>'
+            f'<span class="bcard__meta"><span>{icon("clock", "ico ico-sm", 15)} {b["sessions"]} {sessions_word(lang, b["sessions"])}</span>'
             f'<span class="bcard__done" data-check="{b["num"]}">{icon("check", "ico ico-sm", 15)}</span></span></a>')
     return f'<div class="bgrid">{"".join(out)}</div>'
 
@@ -667,35 +687,81 @@ def cards_exercises(lang, path, only=None):
         kind = u["kind_trainer"] if e["kind"] == "trainer" else u["kind_template"]
         blocks_txt = ", ".join(f"{u['block_word']} {n}" for n in e["blocks"])
         out.append(
-            f'<a class="xcard" href="{rel(path, p)}"><span class="xcard__top">{icon(e["icon"], "ico", 30)}'
+            f'<a class="xcard" href="{rel(path, p)}"><span class="xcard__vis"><img src="{root_prefix(path)}assets/img/vp/{VP_BY_EX.get(e["slug"], "object")}.svg" alt="" width="200" height="210" loading="lazy"></span><span class="xcard__top">{icon(e["icon"], "ico", 30)}'
             f'<span class="tag">{esc(kind)}</span></span><span class="xcard__t">{esc(e["title"][lang])}</span>'
             f'<span class="xcard__d">{esc(e["tagline"][lang])}</span>'
             f'<span class="xcard__m">{esc(e["topic"][lang])} · {esc(blocks_txt)}</span></a>')
     return f'<div class="xgrid">{"".join(out)}</div>'
 
 
+
+PRIMS = {
+    "uk": [("куб", "box", "Cube", "Shift A → Mesh → Cube. Найчастіша стартова форма блокауту."),
+           ("куля", "ball", "UV Sphere", "Голови, колеса, лампи, очі."),
+           ("циліндр", "cyl", "Cylinder", "Ноги, труби, колони, бочки."),
+           ("конус", "cone", "Cone", "Дахи, носи, шипи, ялинки."),
+           ("тор", "ring", "Torus", "Кільця, шини, ручки."),
+           ("площина", "plane", "Plane", "Підлога, крила, листи, леза.")],
+    "en": [("box", "box", "Cube", "Shift A → Mesh → Cube. The most common starting shape for a blockout."),
+           ("sphere", "ball", "UV Sphere", "Heads, wheels, lamps, eyes."),
+           ("cylinder", "cyl", "Cylinder", "Legs, pipes, columns, barrels."),
+           ("cone", "cone", "Cone", "Roofs, noses, spikes, trees."),
+           ("torus", "ring", "Torus", "Rings, tyres, handles."),
+           ("plane", "plane", "Plane", "Floors, wings, sheets, blades.")],
+}
+VP_MODES = [("object", "Object Mode"), ("wireframe", "Wireframe · Tab"), ("xray", "X-ray · Alt Z"), ("subdivision", "Subdivision · Ctrl 1")]
+
+
+def prim_links(lang, path, text):
+    """Wrap each primitive name in the idea text with a glossary link + popover (hover/focus)."""
+    href = rel(path, f"{lang}/glossary.html#term-primitive")
+    out = esc(text)
+    for word, key, name, d in PRIMS[lang]:
+        pop = (f'<span class="prim__pop" role="tooltip"><span class="prim__vis">{ART["prim"][key]}</span>'
+               f'<b>{esc(name)}</b><span>{esc(d)}</span></span>')
+        out = re.sub(rf"(?<![\w-]){re.escape(word)}(?![\w-])", lambda m: f'<a class="prim" href="{href}">{m.group(0)}{pop}</a>', out, count=1)
+    return out
+
+
 def build_home(lang):
     u, h = UI[lang], HOME[lang]
     path = f"{lang}/index.html"
+    root = root_prefix(path)
     start = rel(path, PAGES[(lang, "start")]["path"])
     prog = rel(path, PAGES[(lang, "program")]["path"])
-    idea = "".join(f'<div class="idea"><span class="idea__n">{i["n"]}</span><h3>{esc(i["t"])}</h3><p>{esc(i["d"])}</p></div>' for i in h["idea"])
+    block_hrefs = esc(json.dumps([rel(path, PAGES[(lang, f"block:{b['num']}")]["path"]) for b in BLOCKS]))
+    arts = "".join(f'<div class="hero__obj"{"" if i == 0 else " hidden"}>{s}</div>' for i, s in enumerate(ART["hero"][lang]))
+    modes = esc(json.dumps([[f"{root}assets/img/vp/{f}.svg", t] for f, t in VP_MODES]))
+    vis = [
+        f'<div class="idea__vis" data-vp-cycle="{modes}"><img src="{root}assets/img/vp/object.svg" alt="" width="200" height="210">'
+        f'<span class="idea__mode">Object Mode</span></div>',
+        f'<div class="idea__vis idea__vis--art">{ART["idea2"][lang]}</div>',
+        f'<div class="idea__vis"><span class="phone"><img src="{root}assets/img/vp/object.svg" alt="" width="200" height="210"><i>AR</i></span></div>',
+    ]
+    idea = "".join(
+        f'<div class="idea">{vis[k]}<div class="idea__head"><h3>{esc(i["t"])}</h3><span class="idea__n">{i["n"]}</span></div>'
+        f'<p>{prim_links(lang, path, i["d"]) if k == 0 else esc(i["d"])}</p></div>' for k, i in enumerate(h["idea"]))
     need = "".join(f'<li><b>{esc(n["t"])}</b><span>{esc(n["d"])}</span></li>' for n in h["need"])
+    segs = "<i></i>" * len(BLOCKS)
     main = (
-        f'<section class="hero"><div class="hero__stripes" aria-hidden="true"></div>'
+        f'<section class="hero"><div class="hero__stripes" aria-hidden="true"></div><div class="hero__grid"><div class="hero__copy">'
         f'<p class="eyebrow">{esc(h["eyebrow"])}</p>'
         f'<h1 class="hero__t">{esc(h["title"])}<br><span>{esc(h["title2"])}</span></h1>'
         f'<p class="lede">{esc(h["lede"])}</p>'
-        f'<div class="hero__cta"><a class="btn btn--primary" href="{start}">{esc(h["cta_start"])}{icon("arrow-right", "ico", 20)}</a>'
+        f'<div class="hero__cta" data-new><a class="btn btn--primary" href="{start}">{esc(h["cta_start"])}{icon("arrow-right", "ico", 20)}</a>'
         f'<a class="btn" href="{prog}">{esc(h["cta_program"])}</a></div>'
-        f'<p class="hero__note">{icon("globe", "ico ico-sm", 16)} {esc(h["languages_note"])}</p></section>'
-        f'<section class="sec"><h2>{esc(h["idea_title"])}</h2><div class="ideas">{idea}</div></section>'
-        f'<section class="sec"><div class="sec__head"><h2>{esc(h["map_title"])}</h2>'
+        f'<div class="cont" data-continue data-hrefs="{block_hrefs}" data-label="{esc(u["continue_block"])}" data-all="{esc(u["all_done"])}" data-all-href="{prog}" hidden>'
+        f'<div class="segs" data-segs>{segs}</div><div class="cont__row"><span class="cont__n" data-progress data-total="{len(BLOCKS)}" data-text="{esc(u["progress_of"])}"><span class="progress__n"></span></span>'
+        f'<a class="btn btn--primary" data-cont-link href="{start}"><span></span>{icon("arrow-right", "ico", 20)}</a></div></div>'
+        f'<p class="cont__first" data-continue-first hidden>{esc(u["first_time"])} <a href="{start}">{esc(h["cta_start"])}</a></p>'
+        f'</div><div class="hero__art" data-parallax>{arts}</div></div></section>'
+        f'<section class="sec reveal"><h2>{esc(h["idea_title"])}</h2><div class="ideas">{idea}</div></section>'
+        f'<section class="sec reveal"><div class="sec__head"><h2>{esc(h["map_title"])}</h2>'
         f'<div class="progress progress--inline" data-progress data-total="{len(BLOCKS)}" data-text="{esc(u["progress_of"])}">'
         f'<div class="progress__bar"><span></span></div><p class="progress__n"></p></div></div>'
         f'<p class="sec__lede">{esc(h["map_lede"])}</p>{cards_blocks(lang, path)}</section>'
-        f'<section class="sec"><h2>{esc(h["ex_title"])}</h2><p class="sec__lede">{esc(h["ex_lede"])}</p>{cards_exercises(lang, path)}</section>'
-        f'<section class="sec"><h2>{esc(h["need_title"])}</h2><ul class="need">{need}</ul>'
+        f'<section class="sec reveal"><h2>{esc(h["ex_title"])}</h2><p class="sec__lede">{esc(h["ex_lede"])}</p>{cards_exercises(lang, path)}</section>'
+        f'<section class="sec reveal"><h2>{esc(h["need_title"])}</h2><ul class="need">{need}</ul>'
         f'<p><a class="btn" href="{esc(CFG["blender_url"])}" target="_blank" rel="noopener">{esc(h["need_blender"])}{icon("external", "ico ico-sm", 16)}</a></p></section>')
     desc = h["lede"]
     add_search(lang, path, u["site_name"], [], main)
@@ -762,12 +828,14 @@ def build_block(lang, b):
     prev_b = BLOCKS[idx - 1] if idx > 0 else None
     next_b = BLOCKS[idx + 1] if idx < len(BLOCKS) - 1 else None
     hero = (
-        f'<header class="bhero"><span class="bhero__num" aria-hidden="true">{n:02d}</span>'
+        f'<header class="bhero"><span class="bhero__num" aria-hidden="true" style="view-transition-name:bnum-{n}">{n:02d}</span>'
         f'<div class="bhero__ico">{icon(b["icon"], "ico", 56)}</div>'
-        f'<p class="eyebrow">// {esc(u["block_word"])} {n} {esc(u["of"])} {len(BLOCKS)} · {esc(u["sessions_word"])} {esc(b["range"])}</p>'
+        f'<p class="eyebrow">// {esc(u["block_word"])} {n} {esc(u["of"])} {len(BLOCKS)} · {esc(b["range"])} {esc(sessions_word(lang, b["range"]))}</p>'
         f'<h1>{esc(b["title"][lang])}</h1><p class="lede">{esc(b["tagline"][lang])}</p>'
-        f'<dl class="facts"><div><dt>{icon("clock", "ico ico-sm", 16)} {esc(u["time_label"])}</dt><dd>{b["sessions"]} {esc(sessions_word(lang, b["sessions"], u["sessions_word"]))} · {esc(u["hours_each"])}</dd></div>'
-        f'<div><dt>{icon("flag", "ico ico-sm", 16)} {esc(u["checkpoint_label"])}</dt><dd>{esc(b["checkpoint"][lang])}</dd></div>'
+        f'<dl class="facts"><div><dt>{icon("clock", "ico ico-sm", 16)} {esc(u["time_label"])}</dt><dd>{b["sessions"]} {esc(sessions_word(lang, b["sessions"]))} · {esc(u["hours_each"])}</dd></div>'
+        f'<div class="facts__cp"><dt>{icon("flag", "ico ico-sm", 16)} {esc(u["checkpoint_label"])}</dt><dd>{esc(b["checkpoint"][lang])}</dd>'
+        f'<button class="btn btn--done btn--sm" type="button" data-done="{n}" data-on="{esc(u["marked_done"])}" data-off="{esc(u["mark_done"])}">'
+        f'{icon("check", "ico", 18)}<span>{esc(u["mark_done"])}</span></button></div>'
         f'<div><dt>{icon("bolt", "ico ico-sm", 16)} {esc(u["challenge_label"])}</dt><dd>{esc(b["challenge"][lang])}</dd></div></dl></header>')
     # related
     rel_parts = []
@@ -792,7 +860,7 @@ def build_block(lang, b):
                  f'<span><small>{esc(label)} · {bb["num"]}</small><b>{esc(bb["title"][lang])}</b></span>{icon("arrow-right", "ico", 22)}')
         return f'<a class="pager__a {cls}" href="{rel(path, pp)}">{inner}</a>'
 
-    pager = f'<nav class="pager" aria-label="Pager">{pg(prev_b, "pager__a--prev", u["prev"], "l")}{pg(next_b, "pager__a--next", u["next"], "r")}</nav>'
+    pager = f'<nav class="pager" aria-label="{esc(u["pager"])}">{pg(prev_b, "pager__a--prev", u["prev"], "l")}{pg(next_b, "pager__a--next", u["next"], "r")}</nav>'
     main = (f'<article class="block">{hero}<div class="prose">{content}</div>{done}'
             f'<div class="related">{"".join(rel_parts)}</div>{pager}</article>')
     for t in md.terms:

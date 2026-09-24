@@ -30,7 +30,7 @@ The schedule, announcements and contact with the leader are in the club’s Tele
 
 ## Organizers
 
-The club runs as part of the “Circle of Friends” project of the “Vienna” Charitable Foundation and the Classical Professional College of SumDU, supported by Welthause Graz.
+The club runs as part of the “Circle of Friends” project of the “Vienna” Charitable Foundation and the Classical Professional College of SumDU, supported by Welthaus Graz.
 
 ## About this site
 

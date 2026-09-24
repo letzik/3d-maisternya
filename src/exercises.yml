@@ -9,8 +9,8 @@ exercises:
     app: apps/where-am-i.html
     blocks: [0]
     title:
-      uk: "Де Я Зараз?"
-      en: "Where Am I?"
+      uk: "Де я зараз?"
+      en: "Where am I?"
     tagline:
       uk: "Стан екрана плюс натиснута клавіша — що станеться? Тренуй Object Mode проти Edit Mode, перш ніж це стане джерелом плутанини."
       en: "Screen state plus a key you press — what happens? Train telling Object Mode from Edit Mode before it becomes a source of confusion."
@@ -24,8 +24,8 @@ exercises:
     app: apps/see-shapes.html
     blocks: [1]
     title:
-      uk: "Бачити Форму"
-      en: "See the Shape"
+      uk: "Бачити форму"
+      en: "See the shape"
     tagline:
       uk: "Розклади об’єкт на прості форми й знайди справжній поворот фігури, а не її дзеркало."
       en: "Break an object into simple shapes and find the true rotation of a figure, not its mirror image."
@@ -39,7 +39,7 @@ exercises:
     app: apps/clean-mesh.html
     blocks: [4]
     title:
-      uk: "Чиста Сітка"
+      uk: "Чиста сітка"
       en: "Clean Mesh"
     tagline:
       uk: "Три сітки, один згин: обери ту, що деформується передбачувано, а не ламається чи дає полюс."
